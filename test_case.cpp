@@ -12,6 +12,8 @@ void test_case(int m, int n, int p, void (*gemm_case)(dtype_ptr, dtype_ptr, dtyp
 
     if (!correct_check(rawA, rawB, rawC, m, n, p)) {
         throw std::runtime_error("Incorrect result");
+    } else {
+        std::cerr << "Pass using " << get_max_reg_count() << " regs" << std::endl;
     }
 
     print_log();

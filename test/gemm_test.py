@@ -37,6 +37,7 @@ def output_results(results: list, baseline: tuple):
 
 
 def test_gemm_case(case: str, no_linux=False) -> tuple:
+    subprocess.call(["rm", "-f", ".csim_results"])
     result = subprocess.run(
         f"make {case}" + (" NO_LINUX=1" if no_linux else ""),
         # check=True,
@@ -56,7 +57,7 @@ def test_gemm_case(case: str, no_linux=False) -> tuple:
 def test_gemm(ignore_submit=False, no_linux=False, baseline_only=False):
     if not ignore_submit:
         if not osp.exists(".access_key"):
-            print("Please run bash submit_gemm.sh to setup the access key.")
+            print("Please run ./submit_gemm.sh to setup the access key.")
             exit(0)
 
     # Local test
@@ -97,7 +98,7 @@ def main():
     parser.add_argument("--no_linux", action="store_true")
     parser.add_argument("--baseline", action="store_true")
     args = parser.parse_args()
-    test_gemm(no_linux=args.no_linux, baseline_only=args.baseline)
+    test_gemm(ignore_submit=True, no_linux=args.no_linux, baseline_only=args.baseline)
 
 
 if __name__ == "__main__":

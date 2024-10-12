@@ -44,6 +44,7 @@ def test_csim(ignore_ref=False):
     for s, E, b in [(5, 1, 5), (2, 4, 3), (4, 2, 4), (1, 1, 1)]:
         for trace_file in trace_files:
             if not ignore_ref:
+                subprocess.call(["rm", "-f", results_file])
                 subprocess.run(
                     f"./{ref_executable} -s {s} -E {E} -b {b} -t {trace_file}",
                     check=True,
@@ -54,6 +55,7 @@ def test_csim(ignore_ref=False):
             else:
                 ref_results = "Unknown"
             if False:  # debug only
+                subprocess.call(["rm", "-f", results_file])
                 subprocess.run(
                     f"./{ref_executable2} -s {s} -E {E} -b {b} -t {trace_file}.old",
                     shell=True,
@@ -63,6 +65,7 @@ def test_csim(ignore_ref=False):
                 assert (
                     ref_results == ref2_results
                 ), f"Unexpected results for {trace_file}"
+            subprocess.call(["rm", "-f", results_file])
             subprocess.run(
                 f"./{handin_executable} -s {s} -E {E} -b {b} -t {trace_file}",
                 check=True,

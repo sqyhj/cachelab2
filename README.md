@@ -14,9 +14,17 @@ RUC CacheLab 2 - CMU CacheLab 升级版
 
 ## 项目编译与环境指南
 
-本实验要求的环境是 `Ubuntu 20.04` 及以上。典型场景是用 WSL2 进行开发，如果你不具有这个环境，比如你是 Mac 用户，请访问 [https://ics.ruc.panjd.net](https://ics.ruc.panjd.net) 获取服务器登陆信息，在服务器上完成本实验。
+本实验对系统的要求如下：
 
-> 实际上，在其他操作系统上也可以完成本实验，只是不能得到最佳的编程体验。
+| System | Support |
+| ------ | ------- |
+| Ubuntu 20.04 LTS | ✔️ |
+| Ubuntu 22.04 LTS | ✔️ |
+| Ubuntu 24.04 LTS | ✔️ |
+
+典型场景是用 WSL2 进行开发，如果你不具有这个环境，比如你是 Mac 用户，请访问 [https://ics.ruc.panjd.net](https://ics.ruc.panjd.net) 获取服务器登陆信息，在服务器上完成本实验。
+
+> 实际上，在其他操作系统上也可以完成本实验，只是不能得到最佳的编程体验。助教不负责解决你用其他操作系统时遇到的问题。
 
 > 面向高级用户，我们还提供了 devcontainer 的支持。有需要的同学可以自行使用。
 
@@ -26,7 +34,7 @@ RUC CacheLab 2 - CMU CacheLab 升级版
 
 1. 访问 [https://ics.ruc.panjd.net](https://ics.ruc.panjd.net) 获取提交密钥
 2. Fork + Clone 本仓库
-3. 运行本仓库下的 `submit_gemm.sh` 脚本，即执行 `bash submit_gemm.sh`
+3. 运行本仓库下的 `submit_gemm.sh` 脚本，即执行 `./submit_gemm.sh`
 4. 按要求输入提交密钥（access_key）
     ```bash
     Access key file is empty. Please enter the access key:
@@ -38,7 +46,7 @@ RUC CacheLab 2 - CMU CacheLab 升级版
 
 这个命令的本质是把该文件夹下的 `gemm.cpp` 文件和访问密钥发送到我们的服务器上，我们会在后台运行你的代码，然后给你一个分数。
 
-我们会在文件夹下的 `.access_key` 文件中缓存你的提交密钥，请不要误将该密钥分享给别人，导致你的分数受到影响，我们的密钥不能重置。
+我们会在文件夹下的 `.access_key` 文件中缓存你的提交密钥，请不要误将该密钥分享给别人导致你的分数受到影响，我们的密钥不能重置。
 
 关于排行榜的计分规则，我们会在后续的章节中详细说明。
 
@@ -194,8 +202,8 @@ for (reg i = 0; i < 2; ++i) {
 
 其中：
 - L 和 S 分别代表 load 和 store。
-- 后面的数字代表地址（16进制），如 0x3000000b，但是，为了测试方便，还请兼容 3000000b 这样的输入。
-- 逗号后的数字代表访问的内存大小（byte记），如 1，2，4，8。
+- 后面的数字代表地址（16进制），如 0x3000000b，但是，请兼容 3000000b 这样的输入。注意对于 `scanf` 来说，这是自动支持的，请自行查阅 `%lx`。我们保证地址空间是 32 位的。
+- 逗号后的数字代表访问的内存大小（byte记），如 1，2，4，8，我们保证大小小于等于 8。
 - 最后一个数字代表的是与这行操作相关的寄存器，这个数字为 -1 时代表立即数，比如 `C[0] = 0`。这个信息其实不影响你 Part A 的实现。
 
 这一部分你需要做的是补全 `csim.c` 文件，使其能够正确地模拟 LRU 替换策略的 cache 的行为，计算 cache 的命中次数（hits）、缺失次数（misses）、替换次数（evictions）。
@@ -226,6 +234,7 @@ Examples:
 #### 实现要求
 
 - 你需要保证你的代码支持任意合理的 s，E，b 参数
+- 你需要至少支持 traces 文件夹下的各种样例，样例之外的情况我们不做考虑
 - 你需要保证你的代码没有任何编译警告
 - 尽量使用 `.clang-format` 提供的格式化规则来格式化你的代码
 - `-v` 参数是可选的，我们不进行测试，你可以自行决定是否实现
@@ -334,9 +343,9 @@ void gemm_case1(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
 #### 实现要求
 
 - 你需要保证你的代码没有任何编译警告
-- 只能修改 gemm.cpp 文件
-- 不能使用除了 dtype_ptr 和 reg 外的任何类型
-- 不能申请任何内存，如果你需要内存来暂存东西，而不是寄存器，你可以使用 buffer 字段
+- 只能修改 `gemm.cpp` 文件
+- 不能使用除了 `dtype_ptr` 和 `reg` 外的任何类型
+- 不能申请任何内存，如果你需要内存来暂存东西，而不是寄存器，你可以使用 `buffer` 字段
 - 禁止利用任何二进制技巧在一个寄存器/内存上，存储多个数值
 - 禁止使用复杂度低于 $O(n^3)$ 的矩阵乘法算法，比如 Strassen 算法，你应该专注于 cache 的优化
 - 严格按照框架的假设来设计代码，不允许绕过框架或者改变框架，即不允许利用漏洞，注意，这意味着请再次仔细阅读 [`demo.cpp`](./demo.cpp)，彻底理解这个框架
@@ -361,7 +370,7 @@ python3 test/gemm_test.py --no_linux
 或者仅上传：
 
 ```bash
-bash submit_gemm.sh
+./submit_gemm.sh
 ```
 
 请注意排行榜上是覆盖提交，我们不保留你的历史提交，请确保你最后一次提交是你想要提交的版本。
@@ -397,16 +406,11 @@ bash submit_gemm.sh
 
 ### 提交
 
-首先，我们使用 Github Classroom 来发布作业并追踪完成情况，你需要及时 push 你完成后的作业。其中 Github Classroom 自动打的分数仅供助教观察完成情况，和最终分数无关。
-
-最终提交需要你提交 3 个文件到 OBE 上，分别是 `report/report.pdf`，`csim.c` 和 `gemm.cpp`。请严格按照以下步骤进行提交：
-
-- 将报告生成/放置在 `report/report.pdf` 下。
-- 执行 `make handin` ，它会在项目目录下生成一个 `handin.tar` 文件。请将这个文件原封不动地上传到 OBE 上。
+我们使用 Github Classroom 来发布作业并收集提交，你需要及时 push 你完成后的作业。其中 Github Classroom 自动打的分数仅供助教观察完成情况，和最终分数无关。
 
 ### 报告
 
-具体要求见 [report/report.md](./report/report.md)。
+具体要求见 [report/report.md](./report/report.md)。在完成报告前，你可能需要复习我们的[总体要求](./report/README.md)。
 
 ### 总分
 

@@ -67,8 +67,11 @@ class OutOfRegistersException : public CachelabException {
         : CachelabException(msg) {}
 };
 
+inline int max_reg_count = 0;
+
 namespace {
 constexpr int reg_num = 32;
+int current_reg_count = 0;
 
 bool reg_map[reg_num] = {0};
 
@@ -79,6 +82,8 @@ inline int find_reg() {
 #ifndef NDEBUG
             std::cerr << "allocate reg: " << i << std::endl;
 #endif
+            current_reg_count++;
+            max_reg_count = std::max(max_reg_count, current_reg_count);
             return i;
         }
     }
@@ -90,6 +95,7 @@ inline void free_reg(int reg_id) {
     std::cerr << "free reg: " << reg_id << std::endl;
 #endif
     reg_map[reg_id] = false;
+    current_reg_count--;
 }
 
 }  // namespace
@@ -747,6 +753,10 @@ class FastBuffer {
 
 using reg = RegisterWarper<int>;
 using dtype_ptr = PtrWarper<int>;
+
+inline int get_max_reg_count() {
+    return max_reg_count;
+}
 
 inline void print_log() {
     for (auto& log : dtype_ptr::access_logs) {
