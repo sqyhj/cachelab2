@@ -10,7 +10,7 @@
     \|_______|\|__|\|__|\|_______|\|__|\|__|\|_______|\|_______|\|__|\|__|\|_______| \|_______|
 ```
 
-RUC CacheLab 2 - CMU CacheLab 升级版
+中国人民大学（RUC） CacheLab2（改编自 CMU CacheLab）
 
 模板与问题反馈仓库：[CacheLab2](https://github.com/RUCICS/cachelab2)
 
