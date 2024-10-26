@@ -1,3 +1,7 @@
+import datetime
+import os
+
+
 def parse_csim_output(text) -> tuple:
     "hits:15 misses:1 evictions:0"
     return tuple(
@@ -29,3 +33,17 @@ def format_table(data):
     table_str = table_str.strip()
 
     return table_str
+
+
+def write_current_time(filename):
+    with open(filename, "w") as file:
+        file.write(datetime.datetime.now().isoformat())
+
+
+def read_time(filename):
+    if not os.path.exists(filename):
+        return datetime.datetime.fromisoformat("1970-01-01T00:00:00")
+    with open(filename, "w") as file:
+        now = file.read().strip()
+        now = datetime.datetime.fromisoformat(now)
+    return now

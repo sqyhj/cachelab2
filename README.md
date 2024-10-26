@@ -12,6 +12,14 @@
 
 RUC CacheLab 2 - CMU CacheLab 升级版
 
+模板与问题反馈仓库：[CacheLab2]()
+
+## 阅前须知
+
+- 请确保你已经阅读了 [everything-you-should-know](https://github.com/RUCICS/everything-you-should-know)，尤其是其中的 [How To Ask](https://github.com/RUCICS/everything-you-should-know/blob/main/ask/README.md) 的问题。
+- 负责本实验的[助教](https://github.com/panjd123)不会通过任何人的微信好友申请，助教每天回答且仅回答提交到模板仓库的 [ISSUE]() 中的问题，请在提交问题时检查其他 issue 是否有一样的问题，并反馈到已有的 issue 下，注意 GitHub 默认不显示已经 close 的问题，请注意修改 Filters 查找所有 issue。如果确有必要，助教会在 issue 中要求你加助教的微信解决。
+- 此实验提供的报告非常详细，除了本文档，你还需要仔细阅读 [`demo.cpp`](./demo.cpp)，这相当于本实验第二部分的文档。助教不回答或帮你定位报告中提及的问题，助教会直接叫你来读报告。
+
 ## 项目编译与环境指南
 
 本实验对系统的要求如下：
@@ -24,7 +32,7 @@ RUC CacheLab 2 - CMU CacheLab 升级版
 
 典型场景是用 WSL2 进行开发，如果你不具有这个环境，比如你是 Mac 用户，请访问 [https://ics.ruc.panjd.net](https://ics.ruc.panjd.net) 获取服务器登陆信息，在服务器上完成本实验。
 
-> 实际上，在其他操作系统上也可以完成本实验，只是不能得到最佳的编程体验。助教不负责解决你用其他操作系统时遇到的问题。
+> 实际上，在其他操作系统上也可能可以完成本实验，只是不能得到最佳的编程体验。助教不负责解决其他操作系统遇到的问题。
 
 > 面向高级用户，我们还提供了 devcontainer 的支持。有需要的同学可以自行使用。
 
@@ -32,8 +40,8 @@ RUC CacheLab 2 - CMU CacheLab 升级版
 
 本实验的 Part B 部分，我们会采用~~紧张刺激的~~打榜的形式来计算分数，见 [https://cachelab.ruc.panjd.net](https://cachelab.ruc.panjd.net)。在你开始本实验前，请先做好如下配置：
 
-1. 访问 [https://ics.ruc.panjd.net](https://ics.ruc.panjd.net) 获取提交密钥
-2. Fork + Clone 本仓库
+1. 访问 [https://ics.ruc.panjd.net](https://ics.ruc.panjd.net) 获取提交密钥，由于短时间访问流量过大可能导致学生身份认证失败，请尝试等待一段时间后再试，或者重启电脑，清空 cookies，以无痕模式访问等
+2. Clone 本仓库
 3. 运行本仓库下的 `submit_gemm.sh` 脚本，即执行 `./submit_gemm.sh`
 4. 按要求输入提交密钥（access_key）
     ```bash
@@ -357,7 +365,7 @@ void gemm_case1(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
 
 > 如果你还没完成 [排行榜提交前的准备工作](#排行榜提交前的准备工作)，请立刻回头先完成这个。
 
-运行以下命令可以在本地获取详细的性能报告，同时上传 `gemm.cpp` 到排行榜上：
+运行以下命令可以在本地获取详细的性能报告，同时自动上传 `gemm.cpp` 到排行榜上，自动上传有 30 秒的间隔，如果你想强制上传，请用上传脚本 `./submit_gemm.sh` 上传。
 
 ```bash
 python3 test/gemm_test.py
@@ -367,13 +375,9 @@ python3 test/gemm_test.py
 python3 test/gemm_test.py --no_linux
 ```
 
-或者仅上传：
+请注意排行榜上仅保留最优提交，请在提交报告时注意提交对应的版本（分数一致即可），不一致会被当作作弊严肃处理。
 
-```bash
-./submit_gemm.sh
-```
-
-请注意排行榜上是覆盖提交，我们不保留你的历史提交，请确保你最后一次提交是你想要提交的版本。
+预计在 ddl 前访问流量会特别大，可预见地系统可能出现崩溃或相应极慢的问题，请不要集中到最后几天上传排行榜，以免影响你的成绩，恕不解决因流量过大导致的各类问题。
 
 性能报告会指出你实现的 gemm 算法的 $miss_{cache}$、 $miss_{reg}$ 和 $latency$，以及这个 $latency$ 和最初 naive 实现的版本相比的加速比 $speedup$，最终这三份 $speedup$ 会以加权的形式得到一个综合加速比，我们的性能打分会~~怀着人道主义关怀~~参考这个综合加速比在实验结束后确定。
 
@@ -401,6 +405,7 @@ python3 test/gemm_test.py --no_linux
 - 虽然不同测试点的权重不同，但他们优化后能取得的加速比也不同，全力优化权重高的测试点不一定能在最后加权时取得最好的成绩。
 - 请一定看看我们的[后记](#真实的故事背景与优化提示)。
 - 注意优化 miss_cache 和 miss_reg 的平衡，例如为了减少 miss_reg 而增加一些 miss_cache 可能是值得的。
+- 你可以使用助教写的 [`parabuild`](https://github.com/panjd123/parabuild) 项目进行性能调优，他的用法和场景需要你结合自己的需求探索。
 
 ## 提交，报告与总分
 

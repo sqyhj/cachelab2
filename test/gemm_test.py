@@ -54,7 +54,7 @@ def test_gemm_case(case: str, no_linux=False) -> tuple:
     return case, miss_cache, miss_reg, latency
 
 
-def test_gemm(ignore_submit=False, no_linux=False, baseline_only=False):
+def test_gemm(ignore_submit=False, no_linux=False, baseline_only=False, force=False):
     if not ignore_submit:
         if not osp.exists(".access_key"):
             print("Please run ./submit_gemm.sh to setup the access key.")
@@ -88,7 +88,13 @@ def test_gemm(ignore_submit=False, no_linux=False, baseline_only=False):
     if not ignore_submit:
         # Upload
         print("Leaderboard Submitting...")
-        submission_result = subprocess.run(["bash", "submit_gemm.sh"], check=True)
+        current_time = datetime.datetime.now()
+        last_time = read_time(".last_submit_time")
+        if current_time - last_time < datetime.timedelta(seconds=30) and not force:
+            print("Auto-submit skipped: less than 5 minutes since last submission.")
+        else:
+            submission_result = subprocess.run(["bash", "submit_gemm.sh"], check=True)
+            write_current_time(".last_submit_time")
 
     return o_results
 
@@ -98,7 +104,11 @@ def main():
     parser.add_argument("--no_linux", action="store_true")
     parser.add_argument("--baseline", action="store_true")
     args = parser.parse_args()
-    test_gemm(ignore_submit=True, no_linux=args.no_linux, baseline_only=args.baseline)
+    test_gemm(
+        ignore_submit=True,
+        no_linux=args.no_linux,
+        baseline_only=args.baseline,
+    )
 
 
 if __name__ == "__main__":

@@ -38,8 +38,6 @@ csim: csim.c
 csim-ref: csim-ref.c
 	$(CC) -Wall -O3 -o csim-ref csim-ref.c
 
-case-all: case0 case1 case2 case3
-
 case%:
 	make
 	mkdir -p gemm_traces
