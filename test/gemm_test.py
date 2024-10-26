@@ -90,11 +90,14 @@ def test_gemm(ignore_submit=False, no_linux=False, baseline_only=False, force=Fa
         print("Leaderboard Submitting...")
         current_time = datetime.datetime.now()
         last_time = read_time(".last_submit_time")
-        if current_time - last_time < datetime.timedelta(seconds=30) and not force:
-            print("Auto-submit skipped: less than 5 minutes since last submission.")
+        seconds = 30
+        if current_time - last_time < datetime.timedelta(seconds=seconds) and not force:
+            print(
+                f"Auto-submit skipped: less than {seconds} seconds since last submission."
+            )
         else:
-            submission_result = subprocess.run(["bash", "submit_gemm.sh"], check=True)
             write_current_time(".last_submit_time")
+            submission_result = subprocess.run(["bash", "submit_gemm.sh"], check=True)
 
     return o_results
 

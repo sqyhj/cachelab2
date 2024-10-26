@@ -41,9 +41,10 @@ def write_current_time(filename):
 
 
 def read_time(filename):
-    if not os.path.exists(filename):
+    try:
+        with open(filename, "r") as file:
+            now = file.read().strip()
+            now = datetime.datetime.fromisoformat(now)
+        return now
+    except Exception as e:
         return datetime.datetime.fromisoformat("1970-01-01T00:00:00")
-    with open(filename, "w") as file:
-        now = file.read().strip()
-        now = datetime.datetime.fromisoformat(now)
-    return now
