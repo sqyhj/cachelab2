@@ -105,7 +105,7 @@ def main():
     parser.add_argument("--baseline", action="store_true")
     args = parser.parse_args()
     test_gemm(
-        ignore_submit=True,
+        ignore_submit=False,
         no_linux=args.no_linux,
         baseline_only=args.baseline,
     )
