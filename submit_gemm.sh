@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if ! command -v curl &> /dev/null; then
-    echo "Error: curl is not installed. Please install curl before running this script."
+    echo "Error: curl is not installed. Please install curl before running this script. 请自查如何安装 curl。"
     exit 1
 fi
 
@@ -28,7 +28,15 @@ else
 fi
 
 # 使用 curl 命令发送 POST 请求
-curl -X POST "https://cachelab.ruc.panjd.net/upload" \
+is_public=$1
+if [ "$is_public" = "public" ]; then
+    url="https://pubcachelab.ruc.panjd.net:54398"
+else
+    url="https://cachelab.ruc.panjd.net"
+fi
+
+curl -X POST "$url/upload" \
+-A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" \
 -F "file=@$handin_file" \
 -F "access_key=$access_key" \
 --progress-bar

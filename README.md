@@ -376,6 +376,12 @@ python3 test/gemm_test.py
 python3 test/gemm_test.py --no_linux
 ```
 
+```bash
+./submit_gemm.sh
+./submit_gemm.sh public
+# 如果你恰巧无法访问校园网，我们提供了公网访问：https://pubcachelab.ruc.panjd.net:54398/，你可以用 ./submit_gemm.sh public 来上传
+```
+
 请注意排行榜上仅保留最优提交，请在提交报告时注意提交对应的版本（分数一致即可），不一致会被当作作弊严肃处理。
 
 预计在 ddl 前访问流量会特别大，可预见地系统可能出现崩溃或相应极慢的问题，请不要集中到最后几天上传排行榜，以免影响你的成绩，恕不解决因流量过大导致的各类问题。
