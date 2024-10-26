@@ -1,38 +1,31 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: ''
+name: BUG 报告
+about: 请用此模板提交你遇到的问题，或者有些内容你认为需要进一步澄清
+title: '[请认真地起一个标题方便其他人找到相同的问题]'
 labels: ''
-assignees: ''
+assignees: 'panjd123'
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**描述这个 BUG**
+清晰且详细地表述这个 BUG 或你不清楚的地方。
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+**如何复现**
+如何复现这个问题，注意请尽量提供一个最小可复现的代码片段。而不要说整个项目有问题。
+如果需要提供的内容涉及不便公开的内容，你可以附上你的仓库链接，并告诉我如何复现。
+请附上遇到的问题的文本，而非截图。
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+**预期行为**
+请描述你认为预期行为。
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**截屏**
+如果问题文本比较丑陋，你可以附加上截屏，注意，你仍然需要把问题的文本贴上来，图片只是为了便于阅读。
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+**环境信息（请补充以下内容）：**
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+ - 操作系统: [比如 Ubuntu 22.04 WSL]
+ - g++ 版本：[比如 g++ (Ubuntu 13.2.0-23ubuntu4) 13.2.0]
+ - 你的私人仓库地址：
 
-**Additional context**
-Add any other context about the problem here.
+**额外信息**
+请提供任何你认为有必要的额外信息。
