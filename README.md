@@ -17,8 +17,8 @@
 ## 阅前须知
 
 - 请确保你已经阅读了 [everything-you-should-know](https://github.com/RUCICS/everything-you-should-know)，尤其是其中的 [How To Ask](https://github.com/RUCICS/everything-you-should-know/blob/main/ask/README.md) 的问题。
-- 负责本实验的[助教](https://github.com/panjd123)不会通过任何人的微信好友申请，助教每天回答且仅回答提交到模板仓库的 [ISSUE](https://github.com/RUCICS/cachelab2/issues) 中的问题，请在提交问题时检查其他 issue 是否有一样的问题，并反馈到已有的 issue 下，注意 GitHub 默认不显示已经 close 的问题，请注意修改 Filters 查找所有 issue。如果确有必要，助教会在 issue 中要求你加助教的微信解决。
-- 此实验提供的报告非常详细，除了本文档，你还需要仔细阅读 [`demo.cpp`](./demo.cpp)，这相当于本实验第二部分的文档。助教不回答或帮你定位报告中提及的问题，助教会直接叫你来读报告。
+- 本实验相关的问题请提交到模板仓库的 [ISSUE](https://github.com/RUCICS/cachelab2/issues) 中，请在提交问题时检查其他 issue 是否有一样的问题，并反馈到已有的 issue 下，注意 GitHub 默认不显示已经 close 的问题，请注意修改 Filters 查找所有 issue。如果确有必要，助教会在 issue 中请求你加助教的微信解决，但即使你的问题需要加微信解决，**也烦请先用 issue 和助教取得联系，以确保其他人可以确认/解决相同的问题**。
+- 此实验提供的报告非常详细，除了本文档，你还需要仔细阅读 [`demo.cpp`](./demo.cpp)，这相当于本实验第二部分的文档。依照经验，会有 50% 以上的问题是不读文档导致的，这可能会给助教留下不太好的印象。
 - 事实上，助教接受你提交 PR 来修复或改进本 lab，你对模板仓库的修改会随后由助教同步下去。
 
 ## 项目编译与环境指南
