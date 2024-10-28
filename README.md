@@ -21,7 +21,6 @@
 - 请确保你已经阅读了 [everything-you-should-know](https://github.com/RUCICS/everything-you-should-know)，尤其是其中的 [How To Ask](https://github.com/RUCICS/everything-you-should-know/blob/main/ask/README.md) 的问题。
 - 本实验相关的问题请提交到模板仓库的 [ISSUE](https://github.com/RUCICS/cachelab2/issues) 中，请在提交问题时检查其他 issue 是否有一样的问题，并反馈到已有的 issue 下，注意 GitHub 默认不显示已经 close 的问题，请注意修改 Filters 查找所有 issue。如果确有必要，助教会在 issue 中请求你加助教的微信解决，但即使你的问题需要加微信解决，**也烦请先用 issue 和助教取得联系，以确保其他人可以确认/解决相同的问题**。
 - 此实验提供的报告非常详细，除了本文档，你还需要在完成第二部分实验前仔细阅读 [`demo.cpp`](./demo.cpp)，这是第二部分的文档。依照经验，会有 50% 以上的问题是不读文档导致的，提出报告中解答了的问题可能会给助教留下不太好的印象。
-- 事实上，助教接受你提交 PR 来修复或改进本 lab，你对模板仓库的修改会随后由助教同步下去。
 
 ## 项目编译与环境指南
 
