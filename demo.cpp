@@ -4,6 +4,12 @@
 // demo 函数会演示部分你可以/不可以使用的语法
 // 事实上，多数情况只要不在编译期报错的语法就是可以写的
 
+/*
+要编译并运行本文件，请执行以下命令:
+> make demo
+> ./demo
+*/ 
+
 void demo(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
     /********** 基础用法 **********/
     reg a = A[0];             // 初始化一个寄存器，并读内存到寄存器

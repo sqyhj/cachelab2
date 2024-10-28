@@ -13,9 +13,9 @@ void printSummary(int hits, int misses, int evictions) {
     fclose(output_fp);
 }
 
-void printHelp() {
+void printHelp(const char* name) {
     printf(
-        "Usage: ./csim [-hv] -s <num> -E <num> -b <num> -t <file>\n"
+        "Usage: %s [-hv] -s <num> -E <num> -b <num> -t <file>\n"
         "Options:\n"
         "  -h         Print this help message.\n"
         "  -v         Optional verbose flag.\n"
@@ -24,11 +24,12 @@ void printHelp() {
         "  -b <num>   Number of block offset bits.\n"
         "  -t <file>  Trace file.\n\n"
         "Examples:\n"
-        "  linux>  ./csim -s 4 -E 1 -b 4 -t traces/yi.trace\n"
-        "  linux>  ./csim -v -s 8 -E 2 -b 4 -t traces/yi.trace\n");
+        "  linux>  %s -s 4 -E 1 -b 4 -t traces/yi.trace\n"
+        "  linux>  %s -v -s 8 -E 2 -b 4 -t traces/yi.trace\n", name, name, name);
 }
 
 int main(int argc, char* argv[]) {
+    // printHelp(argv[0]);
     printSummary(0, 0, 0);
     return 0;
 }

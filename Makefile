@@ -1,8 +1,8 @@
 CC=gcc
 CXX=g++
-CFLAGS=-Wall -O0 -g -std=c11 -fsanitize=address
-CXXFLAGS=-Wall -O0 -g -std=c++17 -fsanitize=address
-CSIMFALGS=-Wall -O0 -g
+CFLAGS=-Wall -O0 -g -std=c11 -fsanitize=address -fno-omit-frame-pointer
+CXXFLAGS=-Wall -O0 -g -std=c++17 -fsanitize=address -fno-omit-frame-pointer
+CSIM-REF-FALGS=-Wall -O3 -std=c11
 
 case_s=4
 case_E=1
@@ -35,10 +35,11 @@ demo: demo.o gemm.o matrix.o
 	$(CXX) $(CXXFLAGS) -o demo demo.o gemm.o matrix.o
 
 csim: csim.c
-	$(CC) $(CSIMFALGS) -o csim csim.c
+	$(CC) $(CFLAGS) -o csim csim.c
 
 csim-ref: csim-ref.c
-	$(CC) -Wall -O3 -std=c11 -o csim-ref csim-ref.c
+	$(CC) ${CSIM-REF-FALGS} -o csim-ref csim-ref.c
+	strip csim-ref
 
 case%:
 	make

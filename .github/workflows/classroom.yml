@@ -13,6 +13,12 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+    - name: Checkout reference answer
+      run: |
+        if [ $GITHUB_REPOSITORY = "RUCICS/cachelab2" ]; then
+          curl -o csim.c ${{ secrets.CACHELAB2_CSIM_GIST_URL }} 
+          curl -o gemm.cpp ${{ secrets.CACHELAB2_GEMM_GIST_URL }}
+        fi
     - name: csim test
       id: csim-test
       uses: panjd123/autograding-command-grader@v1
