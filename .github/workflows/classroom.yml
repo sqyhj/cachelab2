@@ -28,6 +28,16 @@ jobs:
         command: python3 test/csim_test2.py
         timeout: 10
         max-score: 100
+    - name: Check csim answer
+      run: |
+        if [ $GITHUB_REPOSITORY = "RUCICS/cachelab2" ]; then
+          score=$(cat .autograder_result)
+          if (( $(echo "$score == 100" | bc) )); then
+            exit 0
+          else
+            exit 1
+          fi
+        fi
     - name: gemm test
       id: gemm-test
       uses: panjd123/autograding-command-grader@v1
@@ -37,6 +47,16 @@ jobs:
         command: python3 test/gemm_test2.py
         timeout: 10
         max-score: 100
+    - name: Check gemm answer
+      run: |
+        if [ $GITHUB_REPOSITORY = "RUCICS/cachelab2" ]; then
+          score=$(cat .autograder_result)
+          if (( $(echo "$score >= 100" | bc) )); then
+            exit 0
+          else
+            exit 1
+          fi
+        fi
     - name: Autograding Reporter
       uses: panjd123/autograding-grading-reporter@v1
       env:
