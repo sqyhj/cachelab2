@@ -241,6 +241,7 @@ Examples:
 
 #### 实现要求
 
+- 编译器为 gcc，请用 C 语言实现
 - 你需要保证你的代码支持任意合理的 s，E，b 参数
 - 你需要至少支持 traces 文件夹下的各种样例，样例之外的情况我们不做考虑
 - 你需要保证你的代码没有任何编译警告
@@ -352,6 +353,7 @@ void gemm_case1(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
 
 #### 实现要求
 
+- 编译器为 g++，允许用 C++ 语法
 - 你需要保证你的代码没有任何编译警告
 - 只能修改 `gemm.cpp` 文件
 - 不能使用除了 `dtype_ptr` 和 `reg` 外的任何类型
