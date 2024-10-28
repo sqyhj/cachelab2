@@ -1,5 +1,7 @@
-CC=g++
-CFLAGS=-Wall -O0 -g -std=c++17 -fsanitize=address
+CC=gcc
+CXX=g++
+CFLAGS=-Wall -O0 -g -std=c11 -fsanitize=address
+CXXFLAGS=-Wall -O0 -g -std=c++17 -fsanitize=address
 CSIMFALGS=-Wall -O0 -g
 
 case_s=4
@@ -9,34 +11,34 @@ case_b=5
 all: main demo csim # handin
 
 matrix.o: matrix.cpp matrix.h common.h
-	$(CC) $(CFLAGS) -c matrix.cpp
+	$(CXX) $(CXXFLAGS) -c matrix.cpp
 
 gemm.o: gemm.cpp matrix.h common.h
-	$(CC) $(CFLAGS) -c gemm.cpp
+	$(CXX) $(CXXFLAGS) -c gemm.cpp
 
 gemm_baseline.o: gemm_baseline.cpp matrix.h common.h
-	$(CC) $(CFLAGS) -c gemm_baseline.cpp
+	$(CXX) $(CXXFLAGS) -c gemm_baseline.cpp
 
 test_case.o: test_case.cpp gemm.h matrix.h common.h
-	$(CC) $(CFLAGS) -c test_case.cpp
+	$(CXX) $(CXXFLAGS) -c test_case.cpp
 
 main.o: main.cpp gemm.h matrix.h common.h test_case.h
-	$(CC) $(CFLAGS) -c main.cpp
+	$(CXX) $(CXXFLAGS) -c main.cpp
 
 main: main.o gemm.o matrix.o test_case.o gemm_baseline.o
-	$(CC) $(CFLAGS) -o main main.o gemm.o gemm_baseline.o matrix.o test_case.o
+	$(CXX) $(CXXFLAGS) -o main main.o gemm.o gemm_baseline.o matrix.o test_case.o
 
 demo.o: demo.cpp gemm.h matrix.h common.h
-	$(CC) $(CFLAGS) -c demo.cpp
+	$(CXX) $(CXXFLAGS) -c demo.cpp
 
 demo: demo.o gemm.o matrix.o
-	$(CC) $(CFLAGS) -o demo demo.o gemm.o matrix.o
+	$(CXX) $(CXXFLAGS) -o demo demo.o gemm.o matrix.o
 
 csim: csim.c
 	$(CC) $(CSIMFALGS) -o csim csim.c
 
 csim-ref: csim-ref.c
-	$(CC) -Wall -O3 -o csim-ref csim-ref.c
+	$(CC) -Wall -O3 -std=c11 -o csim-ref csim-ref.c
 
 case%:
 	make
