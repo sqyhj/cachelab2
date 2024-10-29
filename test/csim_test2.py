@@ -3,6 +3,9 @@ from csim_test import test_csim as _test_csim
 
 
 def test_csim2():
+    with open(".autograder_result", "w") as f:
+        f.write(str(0))
+        
     result = _test_csim()
     # assert result == (20, 100.0), "You should pass all the cases in csim_test.py"
 

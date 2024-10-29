@@ -3,6 +3,9 @@ from gemm_test import test_gemm as _test_gemm
 
 
 def test_csim2():
+    with open(".autograder_result", "w") as f:
+        f.write(str(0))
+    
     result = _test_gemm(ignore_submit=True)
     # miss_cache, miss_reg, latency, baseline
 
