@@ -6,6 +6,12 @@
 
 #define NDEBUG
 
+#ifdef EXPLICIT
+#define EXPLICIT_HINT explicit
+#else
+#define EXPLICIT_HINT
+#endif
+
 template <typename T>
 class RegisterWarper;
 
@@ -68,10 +74,10 @@ class OutOfRegistersException : public CachelabException {
 };
 
 inline int max_reg_count = 0;
+inline int current_reg_count = 0;
 
 namespace {
 constexpr int reg_num = 32;
-int current_reg_count = 0;
 
 bool reg_map[reg_num] = {0};
 
@@ -116,25 +122,25 @@ class BaseRegisterWarper {
     }
 
    public:
-    BaseRegisterWarper(T reg = 0)
+    EXPLICIT_HINT BaseRegisterWarper(T reg = 0)
         : reg_(reg), state_(RegisterWarperState::ACTIVE), reg_id_(find_reg()) {
     }
 
-    BaseRegisterWarper(const MemoryWarper<T>& other)
+    EXPLICIT_HINT BaseRegisterWarper(const MemoryWarper<T>& other)
         : reg_(*other.ptr_), state_(RegisterWarperState::ACTIVE), reg_id_(find_reg()) {
         PtrWarper<T>::access_logs.push_back({MemoryAccessType::READ, other.ptr_, reg_id_});
     }
 
-    BaseRegisterWarper(const MemoryWarper<T>&& other)
+    EXPLICIT_HINT BaseRegisterWarper(const MemoryWarper<T>&& other)
         : reg_(*other.ptr_), state_(RegisterWarperState::ACTIVE), reg_id_(find_reg()) {
         PtrWarper<T>::access_logs.push_back({MemoryAccessType::READ, other.ptr_, reg_id_});
     }
 
-    BaseRegisterWarper(const BaseRegisterWarper<T>& other)
+    EXPLICIT_HINT BaseRegisterWarper(const BaseRegisterWarper<T>& other)
         : reg_(other.reg_), state_(RegisterWarperState::ACTIVE), reg_id_(find_reg()) {
     }
 
-    BaseRegisterWarper(BaseRegisterWarper<T>&& other)
+    EXPLICIT_HINT BaseRegisterWarper(BaseRegisterWarper<T>&& other)
         : reg_(other.reg_), state_(other.state_), reg_id_(other.reg_id_) {
         if (other.state_ == RegisterWarperState::ACTIVE) {
             other.state_ = RegisterWarperState::INACTIVE;
@@ -756,6 +762,10 @@ using dtype_ptr = PtrWarper<int>;
 
 inline int get_max_reg_count() {
     return max_reg_count;
+}
+
+inline int get_current_reg_count() {
+    return current_reg_count;
 }
 
 inline void print_log() {

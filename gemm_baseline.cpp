@@ -18,12 +18,12 @@
 #define p case0_p
 
 void gemm_case0_baseline(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {  // allocate 0 1 2 3
-    for (reg i = 0; i < m; ++i) {                                                    // allocate 4
-        for (reg j = 0; j < p; ++j) {                                                // allocate 5
-            reg tmpc = 0;                                                            // allocate 6
-            for (reg k = 0; k < n; ++k) {                                            // allocate 7
-                reg tmpa = A[i * n + k];                                             // allocate 8
-                reg tmpb = B[k * p + j];                                             // allocate 9
+    for (reg i(0); i < m; ++i) {                                                     // allocate 4
+        for (reg j(0); j < p; ++j) {                                                 // allocate 5
+            reg tmpc(0);                                                             // allocate 6
+            for (reg k(0); k < n; ++k) {                                             // allocate 7
+                reg tmpa(A[i * n + k]);                                              // allocate 8
+                reg tmpb(B[k * p + j]);                                              // allocate 9
                 tmpc += tmpa * tmpb;
             }  // free 9 8
             // free 7
@@ -43,12 +43,12 @@ void gemm_case0_baseline(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer
 #define p case1_p
 
 void gemm_case1_baseline(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
-    for (reg i = 0; i < m; ++i) {
-        for (reg j = 0; j < p; ++j) {
-            reg tmpc = 0;
-            for (reg k = 0; k < n; ++k) {
-                reg tmpa = A[i * n + k];
-                reg tmpb = B[k * p + j];
+    for (reg i(0); i < m; ++i) {
+        for (reg j(0); j < p; ++j) {
+            reg tmpc(0);
+            for (reg k(0); k < n; ++k) {
+                reg tmpa(A[i * n + k]);
+                reg tmpb(B[k * p + j]);
                 tmpc += tmpa * tmpb;
             }
             C[i * p + j] = tmpc;
@@ -65,12 +65,12 @@ void gemm_case1_baseline(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer
 #define p case2_p
 
 void gemm_case2_baseline(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
-    for (reg i = 0; i < m; ++i) {
-        for (reg j = 0; j < p; ++j) {
-            reg tmpc = 0;
-            for (reg k = 0; k < n; ++k) {
-                reg tmpa = A[i * n + k];
-                reg tmpb = B[k * p + j];
+    for (reg i(0); i < m; ++i) {
+        for (reg j(0); j < p; ++j) {
+            reg tmpc(0);
+            for (reg k(0); k < n; ++k) {
+                reg tmpa(A[i * n + k]);
+                reg tmpb(B[k * p + j]);
                 tmpc += tmpa * tmpb;
             }
             C[i * p + j] = tmpc;
@@ -87,12 +87,12 @@ void gemm_case2_baseline(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer
 #define p case3_p
 
 void gemm_case3_baseline(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
-    for (reg i = 0; i < m; ++i) {
-        for (reg j = 0; j < p; ++j) {
-            reg tmpc = 0;
-            for (reg k = 0; k < n; ++k) {
-                reg tmpa = A[i * n + k];
-                reg tmpb = B[k * p + j];
+    for (reg i(0); i < m; ++i) {
+        for (reg j(0); j < p; ++j) {
+            reg tmpc(0);
+            for (reg k(0); k < n; ++k) {
+                reg tmpa(A[i * n + k]);
+                reg tmpb(B[k * p + j]);
                 tmpc += tmpa * tmpb;
             }
             C[i * p + j] = tmpc;
