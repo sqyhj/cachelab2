@@ -67,8 +67,10 @@ void demo(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
     // 所以你会看到计算前后，被占用的寄存器个数不变，但是最大值变大了，这是因为编译器帮你创建了一个
 
     std::cout << "Before\t" << "Max:" << get_max_reg_count() << "\tCurrent: " << get_current_reg_count() << std::endl;
+    // Before  Max:12  Current: 12
     a + A[0];
     std::cout << "After\t" << "Max:" << get_max_reg_count() << "\tCurrent: " << get_current_reg_count() << std::endl;
+    // After   Max:13  Current: 12
 
     // 因为这种转换没有破坏我们的要求，而且可能会给更多人书写方便，所以我们默认允许了这种转换
     // 如果你希望编译器不做这种“智能”的事情，请参考 README.md 附录中的 explict 章节禁用掉隐式转换
@@ -135,10 +137,10 @@ void demo(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
               << "\tCurrent: " << get_current_reg_count() << std::endl;
 
     std::cout << "Before\t" << "Max:" << get_max_reg_count() << "\tCurrent: " << get_current_reg_count() << std::endl;
-    // 14 14
+    // Before  Max:14  Current: 14
     a = example_return(A) + a;
     std::cout << "After\t" << "Max:" << get_max_reg_count() << "\tCurrent: " << get_current_reg_count() << std::endl;
-    // 15 14
+    // After   Max:15  Current: 14
     /*****************************/
 
 
@@ -160,7 +162,7 @@ void demo(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
 
 reg example_return(dtype_ptr& ptr){
     std::cout << "In\t" << "Max:" << get_max_reg_count() << "\tCurrent: " << get_current_reg_count() << std::endl;
-    // 14 14
+    // In      Max:14  Current: 14
     return ptr[0];
 }
 
