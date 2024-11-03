@@ -25,7 +25,8 @@ void printHelp(const char* name) {
         "  -t <file>  Trace file.\n\n"
         "Examples:\n"
         "  linux>  %s -s 4 -E 1 -b 4 -t traces/yi.trace\n"
-        "  linux>  %s -v -s 8 -E 2 -b 4 -t traces/yi.trace\n", name, name, name);
+        "  linux>  %s -v -s 8 -E 2 -b 4 -t traces/yi.trace\n",
+        name, name, name);
 }
 
 int main(int argc, char* argv[]) {
