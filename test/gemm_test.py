@@ -38,12 +38,17 @@ def output_results(results: list, baseline: tuple):
 
 def test_gemm_case(case: str, no_linux=False) -> tuple:
     subprocess.call(["rm", "-f", ".csim_results"])
-    result = subprocess.run(
-        f"make {case}" + (" NO_LINUX=1" if no_linux else ""),
-        # check=True,
-        shell=True,
-        capture_output=True,
-    )
+    try:
+        result = subprocess.run(
+            f"make {case}" + (" NO_LINUX=1" if no_linux else ""),
+            # check=True,
+            shell=True,
+            capture_output=True,
+        )
+    except subprocess.CalledProcessError as e:
+        print(e.stdout.decode())
+        print(e.stderr.decode())
+        exit(1)
     if result.returncode != 0:
         print(f"Failed on {case}")
         print(result.stderr.decode("utf-8"))
