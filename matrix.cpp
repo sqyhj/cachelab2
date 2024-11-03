@@ -4,14 +4,14 @@ namespace {
 std::vector<int*> ptrs;
 }
 
-std::tuple<dtype_ptr, dtype_ptr, dtype_ptr, dtype_ptr> init(int m, int n, int p) {
+std::tuple<ptr_reg, ptr_reg, ptr_reg, ptr_reg> init(int m, int n, int p) {
     int* mem_pool = new int[m * n + n * p + m * p + BUFFER_SIZE];
     int* rawA = mem_pool;
     int* rawB = rawA + m * n;
     int* rawC = rawB + n * p;
     int* buffer = rawC + m * p;
-    dtype_ptr::base = mem_pool;
-    dtype_ptr::base_offset = (int*)0x30000000;
+    ptr_reg::base = mem_pool;
+    ptr_reg::base_offset = (int*)0x30000000;
     ptrs.push_back(mem_pool);
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {
@@ -28,14 +28,14 @@ std::tuple<dtype_ptr, dtype_ptr, dtype_ptr, dtype_ptr> init(int m, int n, int p)
             rawC[i * p + j] = 0;
         }
     }
-    dtype_ptr A(rawA);
-    dtype_ptr B(rawB);
-    dtype_ptr C(rawC);
-    dtype_ptr D(buffer);
+    ptr_reg A(rawA);
+    ptr_reg B(rawB);
+    ptr_reg C(rawC);
+    ptr_reg D(buffer);
     return std::make_tuple(std::move(A), std::move(B), std::move(C), std::move(D));
 }
 
-bool correct_check(dtype_ptr A, dtype_ptr B, dtype_ptr C, int m, int n, int p) {
+bool correct_check(ptr_reg A, ptr_reg B, ptr_reg C, int m, int n, int p) {
     int* rawA = A.ptr_;
     int* rawB = B.ptr_;
     int* rawC = C.ptr_;

@@ -13,7 +13,7 @@
 
 #include "cachelab.h"
 
-#ifndef EXPLICIT
+#ifndef USE_EXPLICIT
 
 #include "cachelab.h"
 
@@ -22,7 +22,7 @@
 #define p case0_p
 
 // // 我们用这个 2*2*2 的矩阵乘法来演示寄存器是怎么被分配的
-// void gemm_case0(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {  // allocate 0 1 2 3
+// void gemm_case0(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {  // allocate 0 1 2 3
 //     for (reg i = 0; i < m; ++i) {                                           // allocate 4
 //         for (reg j = 0; j < p; ++j) {                                       // allocate 5
 //             reg tmpc = 0;                                                   // allocate 6
@@ -40,7 +40,7 @@
 // }  // free 3 2 1 0
 
 // 一种可能的优化
-void gemm_case0(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
+void gemm_case0(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
     reg a[m * n];
     reg b[n * p];
     for (reg i = 0; i < m; ++i) {
@@ -74,7 +74,7 @@ void gemm_case0(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
 #define n case1_n
 #define p case1_p
 
-void gemm_case1(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
+void gemm_case1(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
     for (reg i = 0; i < m; ++i) {
         for (reg j = 0; j < p; ++j) {
             reg tmpc = 0;
@@ -96,7 +96,7 @@ void gemm_case1(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
 #define n case2_n
 #define p case2_p
 
-void gemm_case2(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
+void gemm_case2(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
     for (reg i = 0; i < m; ++i) {
         for (reg j = 0; j < p; ++j) {
             reg tmpc = 0;
@@ -118,7 +118,7 @@ void gemm_case2(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
 #define n case3_n
 #define p case3_p
 
-void gemm_case3(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
+void gemm_case3(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
     for (reg i = 0; i < m; ++i) {
         for (reg j = 0; j < p; ++j) {
             reg tmpc = 0;
@@ -143,7 +143,7 @@ void gemm_case3(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
 #define p case0_p
 
 // // 我们用这个 2*2*2 的矩阵乘法来演示寄存器是怎么被分配的
-// void gemm_case0(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {  // allocate 0 1 2 3
+// void gemm_case0(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {  // allocate 0 1 2 3
 //     for (reg i = 0; i < m; ++i) {                                           // allocate 4
 //         for (reg j = 0; j < p; ++j) {                                       // allocate 5
 //             reg tmpc = 0;                                                   // allocate 6
@@ -161,7 +161,7 @@ void gemm_case3(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
 // }  // free 3 2 1 0
 
 // 一种可能的优化
-void gemm_case0(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
+void gemm_case0(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
     for (reg i(0); i < m; ++i) {
         for (reg j(0); j < p; ++j) {
             reg tmpc(0);
@@ -183,7 +183,7 @@ void gemm_case0(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
 #define n case1_n
 #define p case1_p
 
-void gemm_case1(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
+void gemm_case1(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
     for (reg i(0); i < m; ++i) {
         for (reg j(0); j < p; ++j) {
             reg tmpc(0);
@@ -205,7 +205,7 @@ void gemm_case1(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
 #define n case2_n
 #define p case2_p
 
-void gemm_case2(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
+void gemm_case2(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
     for (reg i(0); i < m; ++i) {
         for (reg j(0); j < p; ++j) {
             reg tmpc(0);
@@ -227,7 +227,7 @@ void gemm_case2(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
 #define n case3_n
 #define p case3_p
 
-void gemm_case3(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
+void gemm_case3(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
     for (reg i(0); i < m; ++i) {
         for (reg j(0); j < p; ++j) {
             reg tmpc(0);

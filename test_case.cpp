@@ -1,6 +1,6 @@
 #include "cachelab.h"
 
-void test_case(int m, int n, int p, void (*gemm_case)(dtype_ptr, dtype_ptr, dtype_ptr, dtype_ptr)) {
+void test_case(int m, int n, int p, void (*gemm_case)(ptr_reg, ptr_reg, ptr_reg, ptr_reg)) {
     int *rawA, *rawB, *rawC;
     {
         auto [A, B, C, buffer] = init(m, n, p);

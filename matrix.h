@@ -9,8 +9,8 @@ namespace {
 extern std::vector<int*> ptrs;
 }
 
-std::tuple<dtype_ptr, dtype_ptr, dtype_ptr, dtype_ptr> init(int m, int n, int p);
+std::tuple<ptr_reg, ptr_reg, ptr_reg, ptr_reg> init(int m, int n, int p);
 
-bool correct_check(dtype_ptr A, dtype_ptr B, dtype_ptr C, int m, int n, int p);
+bool correct_check(ptr_reg A, ptr_reg B, ptr_reg C, int m, int n, int p);
 
 void destroy();

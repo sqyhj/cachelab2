@@ -1,5 +1,5 @@
 #pragma once
-// #define EXPLICIT
+// #define USE_EXPLICIT
 #include "common.h"
 #include "gemm.h"
 #include "matrix.h"

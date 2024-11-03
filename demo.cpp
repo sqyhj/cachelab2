@@ -10,11 +10,11 @@
 > ./demo
 */ 
 
-#ifndef EXPLICIT
+#ifndef USE_EXPLICIT
 
-reg example_return(dtype_ptr& ptr);
+reg example_return(ptr_reg& ptr);
 
-void demo(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
+void demo(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
     /********** 基础用法 **********/
     reg a = A[0];             // 初始化一个寄存器，并读内存到寄存器
     reg b = 100;              // 初始化一个寄存器，并初始化一个常数，这不会导致内存访问，默认初始化为 0
@@ -22,16 +22,15 @@ void demo(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
     B[10] = a;                // 将寄存器写入内存
     A[0] = 0;                 // 这会产生一条特殊的内存访问记录，其寄存器编号为 -1，代表不是来着于寄存器，而是立即数
                               // 其开销等于从寄存器到内存
-    dtype_ptr subC = C + 10;  // 初始化一个指针，指针也会占用一个寄存器，注意函数传入的参数也占用了寄存器
+    ptr_reg subC = C + 10;  // 初始化一个指针，指针也会占用一个寄存器，注意函数传入的参数也占用了寄存器
     reg var[2];               // 你可以申请寄存器数组
-    // reg var2d[2][2];       // 你不可以申请这种二维数组的寄存器，因为框架暂不支持，你可以用摊平的一维数组代替
 
     // int mem1;                 // 但你不能申请内存，或者内存数组
     // int mem2[2];              // 但你不能申请内存，或者内存数组
 
     reg c = *subC;                                          // 用 * 操作符读内存到寄存器
     reg d = A[a * b * (c + 5)];                             // 寄存器运算的结果可以作为下标使用
-    [[maybe_unused]] dtype_ptr subA = A + a * (b + 5) * c;  // 也可以用于指针运算
+    [[maybe_unused]] ptr_reg subA = A + a * (b + 5) * c;  // 也可以用于指针运算
     /*****************************/
 
 
@@ -49,15 +48,15 @@ void demo(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
     // 以下操作会在编译期报错
 
     // A[0] * B[0];      // 内存上的数据不能直接参与计算
-    // error: no match for ‘operator*’ (operand types are ‘MemoryWarper<int>’ and ‘MemoryWarper<int>’)
+    // error: no match for ‘operator*’ (operand types are ‘MemoryWarpper<int>’ and ‘MemoryWarpper<int>’)
 
     // A[0] * a;         // 内存上的数据不能直接参与计算
-    // error: no match for ‘operator*’ (operand types are ‘MemoryWarper<int>’ and ‘reg’ {aka ‘RegisterWarper<int>’})
+    // error: no match for ‘operator*’ (operand types are ‘MemoryWarpper<int>’ and ‘reg’ {aka ‘RegisterWarpper<int>’})
     // 1 + A[0];
-    // error: no match for ‘operator+’ (operand types are ‘int’ and ‘MemoryWarper<int>’)
+    // error: no match for ‘operator+’ (operand types are ‘int’ and ‘MemoryWarpper<int>’)
 
     // A[0] = *(B + 1);  // 不能直接内存到内存赋值
-    // error: use of deleted function ‘constexpr MemoryWarper<int>& MemoryWarper<int>::operator=(const MemoryWarper<int>&)’
+    // error: use of deleted function ‘constexpr MemoryWarpper<int>& MemoryWarpper<int>::operator=(const MemoryWarpper<int>&)’
     /*****************************/
 
 
@@ -118,18 +117,18 @@ void demo(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
     // 我们认为一般人没必要写函数，如果你不理解
 
     // 直接传参，默认是拷贝构造，意味着函数体内会多占用一个寄存器
-    // void example0(dtype_ptr ptr);
+    // void example0(ptr_reg ptr);
     
     // 如果这不是你的本意，我们传引用即可
-    // void example1(dtype_ptr& ptr);
+    // void example1(ptr_reg& ptr);
     // example1(A);
 
     // 或者传地址（对于没学过 C++）的同学
-    // void example1(dtype_ptr* ptr);
+    // void example1(ptr_reg* ptr);
     // example1(&A);
 
     // 或者使用 std::move，虽然这通常没必要，函数开始后 ptr 变成了 A，A 失效，函数结束后 ptr 销毁，A 依然失效。
-    // void example2(dtype_ptr ptr);
+    // void example2(ptr_reg ptr);
     // example2(std::move(A));
 
     // 函数返回值则会帮你创建一个临时寄存器，你可以观察到 max 变大了 1
@@ -158,9 +157,11 @@ void demo(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
     // 多数情况下你写出来的式子是可以被编译器优化成不需要临时寄存器的，所以我们为了多数情况的方便，保留了这个漏洞
     // 比如你可能会频繁地写 i * n + j，如果我们禁止了多元计算，你的代码会变得很丑陋
     /*****************************/
+
+    reg tmp_array[2][2];
 }
 
-reg example_return(dtype_ptr& ptr){
+reg example_return(ptr_reg& ptr){
     std::cout << "In\t" << "Max:" << get_max_reg_count() << "\tCurrent: " << get_current_reg_count() << std::endl;
     // In      Max:14  Current: 14
     return ptr[0];
@@ -175,9 +176,9 @@ int main() {
 
 #else
 
-reg example_return(dtype_ptr& ptr);
+reg example_return(ptr_reg& ptr);
 
-void demo(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
+void demo(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
     /********** 基础用法 **********/
     reg a(A[0]);             // 初始化一个寄存器，并读内存到寄存器
     reg b(100);              // 初始化一个寄存器，并初始化一个常数，这不会导致内存访问，默认初始化为 0
@@ -185,16 +186,15 @@ void demo(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
     B[10] = a;                // 将寄存器写入内存
     A[0] = 0;                 // 这会产生一条特殊的内存访问记录，其寄存器编号为 -1，代表不是来着于寄存器，而是立即数
                               // 其开销等于从寄存器到内存
-    dtype_ptr subC = C + 10;  // 初始化一个指针，指针也会占用一个寄存器，注意函数传入的参数也占用了寄存器
+    ptr_reg subC = C + 10;  // 初始化一个指针，指针也会占用一个寄存器，注意函数传入的参数也占用了寄存器
     reg var[2];               // 你可以申请寄存器数组
-    // reg var2d[2][2];       // 你不可以申请这种二维数组的寄存器，因为框架暂不支持，你可以用摊平的一维数组代替
 
     // int mem1;                 // 但你不能申请内存，或者内存数组
     // int mem2[2];              // 但你不能申请内存，或者内存数组
 
     reg c(*subC);                                          // 用 * 操作符读内存到寄存器
     reg d(A[a * b * (c + 5)]);                             // 寄存器运算的结果可以作为下标使用
-    [[maybe_unused]] dtype_ptr subA = A + a * (b + 5) * c;  // 也可以用于指针运算
+    [[maybe_unused]] ptr_reg subA = A + a * (b + 5) * c;  // 也可以用于指针运算
     /*****************************/
 
 
@@ -212,22 +212,22 @@ void demo(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
     // 以下操作会在编译期报错
 
     // A[0] * B[0];      // 内存上的数据不能直接参与计算
-    // error: no match for ‘operator*’ (operand types are ‘MemoryWarper<int>’ and ‘MemoryWarper<int>’)
+    // error: no match for ‘operator*’ (operand types are ‘MemoryWarpper<int>’ and ‘MemoryWarpper<int>’)
 
     // A[0] * a;         // 内存上的数据不能直接参与计算
-    // error: no match for ‘operator*’ (operand types are ‘MemoryWarper<int>’ and ‘reg’ {aka ‘RegisterWarper<int>’})
+    // error: no match for ‘operator*’ (operand types are ‘MemoryWarpper<int>’ and ‘reg’ {aka ‘RegisterWarpper<int>’})
     // 1 + A[0];
-    // error: no match for ‘operator+’ (operand types are ‘int’ and ‘MemoryWarper<int>’)
+    // error: no match for ‘operator+’ (operand types are ‘int’ and ‘MemoryWarpper<int>’)
 
     // A[0] = *(B + 1);  // 不能直接内存到内存赋值
-    // error: use of deleted function ‘constexpr MemoryWarper<int>& MemoryWarper<int>::operator=(const MemoryWarper<int>&)’
+    // error: use of deleted function ‘constexpr MemoryWarpper<int>& MemoryWarpper<int>::operator=(const MemoryWarpper<int>&)’
     /*****************************/
 
     /********** 特别值得注意的点 **********/
     // 这一部分是开启了 explict 的版本，你会如期遇到编译错误
 
     // a + A[0];
-    // error: no match for ‘operator+’ (operand types are ‘reg’ {aka ‘RegisterWarper<int>’} and ‘MemoryWarper<int>’)
+    // error: no match for ‘operator+’ (operand types are ‘reg’ {aka ‘RegisterWarpper<int>’} and ‘MemoryWarpper<int>’)
     /*****************************/
 
     /********** 高级用法 **********/
@@ -269,14 +269,14 @@ void demo(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
     // 事先提醒：函数可能导致临时寄存器的创建和销毁，当你极限使用寄存器时可能会很抓狂，但当你寄存器比较富余时函数可以随便写
 
     // 直接传参，默认是拷贝构造，意味着函数体内会多占用一个寄存器
-    // void example0(dtype_ptr ptr);
+    // void example0(ptr_reg ptr);
     
     // 如果这不是你的本意，我们传引用即可
-    // void example1(dtype_ptr& ptr);
+    // void example1(ptr_reg& ptr);
     // example1(A);
 
     // 或者使用 std::move，虽然这通常没必要，函数开始后 ptr 变成了 A，A 失效，函数结束后 ptr 销毁，A 依然失效。
-    // void example2(dtype_ptr ptr);
+    // void example2(ptr_reg ptr);
     // example2(std::move(A));
 
     // 函数返回值则会帮你创建一个临时寄存器，你可以观察到 max 变大了 1
@@ -307,7 +307,7 @@ void demo(dtype_ptr A, dtype_ptr B, dtype_ptr C, dtype_ptr buffer) {
     /*****************************/
 }
 
-reg example_return(dtype_ptr& ptr){
+reg example_return(ptr_reg& ptr){
     std::cout << "In\t" << "Max:" << get_max_reg_count() << "\tCurrent: " << get_current_reg_count() << std::endl;
     // 14 14
     return reg(ptr[0]);
