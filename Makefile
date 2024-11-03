@@ -2,7 +2,21 @@ CC=gcc
 CXX=g++
 CFLAGS=-Wall -O0 -g -std=c11 -fsanitize=address -fno-omit-frame-pointer
 CXXFLAGS=-Wall -O0 -g -std=c++17 -fsanitize=address -fno-omit-frame-pointer
-CSIM-REF-FALGS=-Wall -O3 -std=c11
+CSIM_REF_FLAGS=-Wall -O3 -std=c11
+
+ifeq ($(wildcard csim.cpp), csim.cpp)
+	CSIM_CC=$(CXX)
+	CSIM_FLAGS=$(CXXFLAGS)
+	CSIM_SOURCE=csim.cpp
+else ifeq ($(wildcard csim.cc), csim.cc)
+	CSIM_CC=$(CXX)
+	CSIM_FLAGS=$(CXXFLAGS)
+	CSIM_SOURCE=csim.cc
+else
+	CSIM_CC=$(CC)
+	CSIM_FLAGS=$(CFLAGS)
+	CSIM_SOURCE=csim.c
+endif
 
 case_s=4
 case_E=1
@@ -34,11 +48,11 @@ demo.o: demo.cpp gemm.h matrix.h common.h cachelab.h
 demo: demo.o gemm.o matrix.o
 	$(CXX) $(CXXFLAGS) -o demo demo.o gemm.o matrix.o
 
-csim: csim.c
-	$(CC) $(CFLAGS) -o csim csim.c
+csim: $(CSIM_SOURCE)
+	$(CSIM_CC) $(CSIM_FLAGS) -o csim $(CSIM_SOURCE)
 
 csim-ref: csim-ref.c
-	$(CC) ${CSIM-REF-FALGS} -o csim-ref csim-ref.c
+	$(CC) ${CSIM_REF_FLAGS} -o csim-ref csim-ref.c
 	strip csim-ref
 
 case%:
