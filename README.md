@@ -186,16 +186,92 @@ Score: 100.00
 
 #### 故事背景
 
-CPU 在工作时不能直接用内存中的数据计算，而是通过一定的层次结构层层传递到 CPU 内部再传出。具体来说，内存中的值会先加载到 cache 里，再从 cache 加载到寄存器 register 里，CPU 用寄存器完成计算后把计算结果从寄存器写回 cache，再写回内存。实际上的架构可能有各异的中间组件而不是 cache 或者寄存器，但这种层次结构是普遍存在的，所以我们不妨用以上这个模型来描述。
+本次题目基于 RISC-V 架构的 CPU，以下是一些背景知识。
 
-为了提升这个过程的性能，所以我们有至少两种优化思路：
+当今处理器有三大主流架构：X86，ARM 和 RISC-V，由于使用 X86 或者 ARM 架构时都需要获取授权，并缴纳最高上百万美元的授权费，且投产后每枚芯片都需要单独再收取费用，所以 RISC-V 架构逐渐成为了学术界和开源界的首选，中国是 RISC-V 架构的重要贡献者之一。
+
+我们比较熟悉的 X86 架构是 CISC（Complex Instruction Set Computer）架构，而 ARM 和 RISC-V 是 RISC（Reduced Instruction Set Computer）架构。这两种架构的区别在于指令集的复杂度，CISC 架构的指令集更加复杂，一个指令可以完成多个操作，而 RISC 架构的指令集更加简单，一个指令只完成一个操作。这样的区别导致了 RISC 架构的 CPU 更加容易设计，同时功耗也更低，过去一般认为 CISC 架构的 CPU 性能更好，但随着技术的发展，这个结论也逐渐不绝对，比如 ARM 架构的 CPU 往往可以在相同功耗下堆叠更多的核心，从而可能获得更好的性能。
+
+CISC 和 RISC 架构一个显著的具体区别是在 CISC（如 X86）中，操作数可以直接从内存送进算术逻辑单元（ALU）进行计算，而在 RISC（如 ARM 和 RISC-V）中，操作数必须先送入寄存器，然后再送入 ALU 进行计算。
+
+![](./imgs/risc-cisc.png)
+
+实质上，在 CISC 架构中访问内存相比于直接访问寄存器也不是零成本的，这个开销被隐藏在 CPU 内部从而不方便我们观察与优化，但是在 RISC 架构中，这个开销是可以在汇编指令层面被观察到。
+
+以这段代码为例：
+
+```c
+void test(int mem[]) {
+    mem[2] += mem[0] * mem[1];
+}
+```
+
+X86 (32-bits) 的[汇编代码](https://godbolt.org/z/MTEfM89jM)为：
+
+```asm
+_Z4testPi:
+        movl    (%rdi), %eax
+        imull   4(%rdi), %eax
+        addl    %eax, 8(%rdi)
+        ret
+```
+
+RISC-V (32-bits) 的[汇编代码](https://godbolt.org/z/s1boK5bE8)为：
+
+```asm
+_Z4testPi:
+        lw      a4,0(a0)
+        lw      a3,4(a0)
+        lw      a5,8(a0)
+        mul     a4,a4,a3
+        add     a5,a5,a4
+        sw      a5,8(a0)
+        ret
+```
+
+可以发现 RISC-V 的汇编显式地将内存读取到寄存器，然后再进行计算。同时 32 位 RISC-V 是用寄存器传参的，类似 64 位 X86 的行为。
+
+我们的题目就是基于类似 RISC-V 架构的 CPU。
+
+具体来说，我们假设的 CPU 在工作时不能直接用内存中的数据计算，内存中的值会先加载到 cache 里，再从 cache 加载到寄存器 register 里，CPU 用寄存器完成计算后把计算结果从寄存器写回 cache，再写回内存。
+
+为了提升这个过程的性能，我们有至少两种优化思路：
 
 - 减少内存读写：即通过访问模式设计，减少 cache miss，尽量复用 cache
 - 减少 cache 读写：即通过访问模式设计，减少去读写 cache，尽量复用寄存器
 
-其中“减少内存读写”就是课上提到的内容，与以往 CacheLab 不同的是，本实验显式地加入了对寄存器性能的考量。我们以以下一个迷你矩阵乘法为例，介绍寄存器性能的优化的含义。
+我们的题目只考虑以上内存访问过程中的性能，不考虑计算的性能，比如加法和乘法指令我们认为是零成本的。
 
-#### 矩阵乘法与寄存器
+#### cache 性能优化
+
+其中“减少内存读写”就是课上提到或将提到的内容，我们会在这里简要回顾一下，假如你在以列优先的方式访问一个二维数组 `B`：
+
+```c
+int B[256][256];
+for (int i = 0; i < 256; i++) {
+    for (int j = 0; j < 256; j++) {
+        do_something(B[j][i]);
+    }
+}
+```
+
+直接实现，会导致 B 的内存访问不连续。假设 cache 的行大小是 32 字节，即 8 个 int，我们可以对访问进行分块，即每次处理一个 $8 \times 8$ 的子矩阵，这样每个子矩阵在访问的过程中都充分利用了已经读取的 cache 行，减少了 cache miss。
+
+```c
+for (int i = 0; i < 256; i += 8) {
+    for (int j = 0; j < 256; j += 8) {
+        for (int ii = i; ii < i + 8; ii++) {
+            for (int jj = j; jj < j + 8; jj++) {
+                do_something(B[j][i]);
+            }
+        }
+    }
+}
+```
+
+#### 寄存器性能优化
+
+与以往 CacheLab 不同的是，本实验显式地加入了对寄存器性能的考量。我们以以下一个迷你矩阵乘法为例，介绍寄存器性能的优化的含义。
 
 考虑两个 $2 \times 2$ 矩阵相乘的场景，假设此时所有数据已经 cache 里，我们只关注寄存器层面的问题。
 
@@ -292,9 +368,9 @@ for (reg i = 0; i < 2; ++i) {
 
 > [`demo.cpp`](./demo.cpp) 是本框架的详细文档，请在读完本文档后详细阅读 [`demo.cpp`](./demo.cpp) 了解更多用法。
 
-以上我们简要介绍了寄存器性能的含义。但是在 X86 架构下，第一，你必须在汇编层面才能控制寄存器，我们并不想你们手搓汇编。
-第二，X86 汇编并没有禁止你直接操作内存，而是在CPU内部做了中间的步骤，导致你的代码不能很精准地反应对寄存器的操作。
-所以，我们我们提供了一个框架让你的代码能够精准反应对内存和寄存器进行的操作。
+以上我们简要介绍了寄存器性能的含义以及 RISC-V 架构下你不能直接操作内存这个限制。
+
+但是要控制寄存器的行为，通常需要在汇编代码层面操作，而我们并不想你们手搓汇编，所以，我们我们提供了一个框架，你只需要模仿在写汇编，我们会模拟统计寄存器和内存的访问/使用情况。
 
 在这个框架下，你可以当作你在写一种特别的 `C/C++` 代码，但有两个特殊之处：
 
@@ -334,11 +410,13 @@ void example_now(ptr_reg mem){
 }
 ```
 
-以上代码如果翻译成汇编，大概是这样的：
+以上代码如果翻译成 RISC-V 汇编，大概是这样的，其中他会把乘2优化成左移一位，不过我们只考虑内存访问，即 `lw` 和 `sw` 相关的性能，所以这并不重要：
 
 ```asm
-movl    (%mem), %a
-imull   $2, %a, %a
+    lw      a5,0(a0)
+    slli    a5,a5,1
+    sw      a5,0(a0)
+    ret
 ```
 
 本框架是用 `C++` 编写的，但是不需要掌握 `C++` 的特性，你们可以当作 `C` 代码来写，特别之处在于我们引入了两个特殊的类型，他们有一些操作限制。特别地，如果你想要调试输出我们引入的两个类型，请使用 `C++` 中的 `std::cout << a << std::endl` 来输出，仅此例外，具体见 [`demo.cpp`](./demo.cpp)。
@@ -347,7 +425,7 @@ imull   $2, %a, %a
 
 #### 题目描述
 
-以上你应该已经理解了寄存器性能，以及我们提供的框架的含义，现在你需要再考虑上 cache，基于我们提供的框架，将这些优化实现进 [`gemm.cpp`](./gemm.cpp) 里，目前 [`gemm.cpp`](./gemm.cpp) 只提供了最朴素的算法用作演示。
+以上你应该已经理解了寄存器性能和 Cache 性能，以及我们提供的框架的含义，现在你需要基于我们提供的框架，将这些优化实现进 [`gemm.cpp`](./gemm.cpp) 里，目前 [`gemm.cpp`](./gemm.cpp) 只提供了最朴素的算法用作演示。
 
 我们假设的硬件环境是：
 
@@ -512,45 +590,6 @@ Visual comparison chart: http://i.imgur.com/k0t1e.png
 当然，随着计算机发展，表格中的数据也在变化，你可以搜索 "Latency Numbers Every Programmer Should Know" 来找到相关的讨论，或者访问[这个有趣的网站](https://colin-scott.github.io/personal_website/research/interactive_latency.html)。
 
 ## 附录
-
-### 精简指令集
-
-前面我们提到，CPU 工作时并不是直接操作内存，而是经过一些层次结构流转到计算单元上再操作的，现在流行的三大CPU架构：X86，ARM，RISC-V 中都是这样设计的，但是 X86 允许你在汇编代码中直接操作内存，CPU 会自己处理好上述过程，而 ARM 和 RISC-V 则要求你显式地把内存数据加载到寄存器里再操作。我们的框架其实更接近于大家不太熟悉的 RISC 架构。
-
-#### RISV 指令集和 X86 指令集在我们这个问题下的区别
-
-X86 指令集中，本来读写内存就比较慢，如果同时还做加减运算就会导致这条指令的执行时间很长，不同指令的执行时间差异很大，这大大增加了设计 CPU 的难度，或者说 CPU 的复杂度，进而增加了 CPU 的功耗和成本。Windows 电脑目前常用 X86 架构的 CPU，比如 Intel 和 AMD 的 CPU；而苹果的 M 系列处理器，以及手机的高通，台积电等处理器则是 ARM 架构的。一个可以感知的显著区别就是使用 ARM 指令集的 CPU 因为设计可以更简单，所以功耗更低，续航更好。
-
-以这段代码为例：
-
-```c
-int test(int mem[]) {
-    int sum = mem[0] + mem[1];
-    return sum;
-}
-```
-
-X86 (32-bits) 的[汇编代码]((https://godbolt.org/#g:!((g:!((g:!((h:codeEditor,i:(filename:'1',fontScale:14,fontUsePx:'0',j:1,lang:c%2B%2B,selection:(endColumn:2,endLineNumber:4,positionColumn:1,positionLineNumber:1,selectionStartColumn:2,selectionStartLineNumber:4,startColumn:1,startLineNumber:1),source:'int+test(int+mem%5B%5D)+%7B%0A++++int+sum+%3D+mem%5B0%5D+%2B+mem%5B1%5D%3B%0A++++return+sum%3B%0A%7D'),l:'5',n:'1',o:'C%2B%2B+source+%231',t:'0')),k:49.155554819976146,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((h:compiler,i:(compiler:g142,filters:(b:'0',binary:'1',binaryObject:'1',commentOnly:'0',debugCalls:'1',demangle:'1',directives:'0',execute:'1',intel:'1',libraryCode:'1',trim:'1',verboseDemangling:'0'),flagsViewOpen:'1',fontScale:14,fontUsePx:'0',j:1,lang:c%2B%2B,libs:!(),options:'-O2+-m32',overrides:!(),selection:(endColumn:12,endLineNumber:5,positionColumn:12,positionLineNumber:5,selectionStartColumn:1,selectionStartLineNumber:1,startColumn:1,startLineNumber:1),source:1),l:'5',n:'0',o:'+x86-64+gcc+14.2+(Editor+%231)',t:'0')),k:50.84444518002387,l:'4',m:100.00000000000001,n:'0',o:'',s:0,t:'0')),l:'2',n:'0',o:'',t:'0')),version:4))为：
-
-```asm
-_Z4testPi:
-        movl    4(%esp), %edx
-        movl    4(%edx), %eax
-        addl    (%edx), %eax
-        ret
-```
-
-RISC-V (32-bits) 的[汇编代码](https://godbolt.org/#g:!((g:!((g:!((h:codeEditor,i:(filename:'1',fontScale:14,fontUsePx:'0',j:1,lang:c%2B%2B,selection:(endColumn:2,endLineNumber:4,positionColumn:2,positionLineNumber:4,selectionStartColumn:2,selectionStartLineNumber:4,startColumn:2,startLineNumber:4),source:'int+test(int+mem%5B%5D)+%7B%0A++++int+sum+%3D+mem%5B0%5D+%2B+mem%5B1%5D%3B%0A++++return+sum%3B%0A%7D'),l:'5',n:'1',o:'C%2B%2B+source+%231',t:'0')),k:49.155554819976146,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((h:compiler,i:(compiler:rv32-gcc1420,filters:(b:'0',binary:'1',binaryObject:'1',commentOnly:'0',debugCalls:'1',demangle:'1',directives:'0',execute:'1',intel:'0',libraryCode:'1',trim:'1',verboseDemangling:'0'),flagsViewOpen:'1',fontScale:14,fontUsePx:'0',j:1,lang:c%2B%2B,libs:!(),options:'-O2',overrides:!(),selection:(endColumn:12,endLineNumber:5,positionColumn:12,positionLineNumber:5,selectionStartColumn:1,selectionStartLineNumber:1,startColumn:1,startLineNumber:1),source:1),l:'5',n:'0',o:'+RISC-V+(32-bits)+gcc+14.2.0+(Editor+%231)',t:'0')),k:50.84444518002387,l:'4',m:100.00000000000001,n:'0',o:'',s:0,t:'0')),l:'2',n:'0',o:'',t:'0')),version:4)为：
-
-```asm
-_Z4testPi:
-        lw      a4,0(a0)
-        lw      a0,4(a0)
-        add     a0,a4,a0
-        ret
-```
-
-这时你会发现，我们的框架其实和 RISC-V 的汇编更接近。
 
 ### `explict` 关键字
 
