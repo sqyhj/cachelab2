@@ -59,24 +59,6 @@ void demo(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
     // error: use of deleted function ‘constexpr MemoryWarpper<int>& MemoryWarpper<int>::operator=(const MemoryWarpper<int>&)’
     /*****************************/
 
-
-    /********** 隐式转换 **********/
-    // 我们的框架默认不使用 explict，也就是允许隐式类型转换
-    // 比如以下 a + A[0] 正常是不允许的，但“智能”的编译器会帮你把 A[0] 转成寄存器，然后计算，计算后销毁
-    // 所以你会看到计算前后，被占用的寄存器个数不变，但是最大值变大了，这是因为编译器帮你创建了一个
-
-    std::cout << "Before\t" << "Max:" << get_max_reg_count() << "\tCurrent: " << get_current_reg_count() << std::endl;
-    // Before  Max:12  Current: 12
-    a + A[0];
-    std::cout << "After\t" << "Max:" << get_max_reg_count() << "\tCurrent: " << get_current_reg_count() << std::endl;
-    // After   Max:13  Current: 12
-
-    // 因为这种转换没有破坏我们的要求，而且可能会给更多人书写方便，所以我们默认允许了这种转换
-    // 如果你希望编译器不做这种“智能”的事情，请参考 README.md 附录中的 explict 章节禁用掉隐式转换
-    // 禁用后你需要用 reg a(0); 来初始化一个寄存器，否则属于隐式转换会报错
-    /*****************************/
-
-
     /********** 高级用法 **********/
     reg old_reg = A[10];
     std::cout << old_reg.info() << std ::endl;  // $4(ACTIVE): 10
@@ -157,8 +139,6 @@ void demo(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
     // 多数情况下你写出来的式子是可以被编译器优化成不需要临时寄存器的，所以我们为了多数情况的方便，保留了这个漏洞
     // 比如你可能会频繁地写 i * n + j，如果我们禁止了多元计算，你的代码会变得很丑陋
     /*****************************/
-
-    reg tmp_array[2][2];
 }
 
 reg example_return(ptr_reg& ptr){
@@ -168,8 +148,6 @@ reg example_return(ptr_reg& ptr){
 }
 
 int main() {
-    std::cout << "你正在使用不带 explict 限制的版本，你可能会遇到编译器的隐式类型转换。" << std::endl
-     << "比如在处理内存和寄存器计算时自动帮你生成一个寄存器，并在计算后销毁，这可能导致代码行为与你的预期不一致。" << std::endl;
     auto [A, B, C, buffer] = init(32, 32, 32);
     demo(std::move(A), std::move(B), std::move(C), std::move(buffer));
 }
@@ -221,13 +199,6 @@ void demo(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
 
     // A[0] = *(B + 1);  // 不能直接内存到内存赋值
     // error: use of deleted function ‘constexpr MemoryWarpper<int>& MemoryWarpper<int>::operator=(const MemoryWarpper<int>&)’
-    /*****************************/
-
-    /********** 特别值得注意的点 **********/
-    // 这一部分是开启了 explict 的版本，你会如期遇到编译错误
-
-    // a + A[0];
-    // error: no match for ‘operator+’ (operand types are ‘reg’ {aka ‘RegisterWarpper<int>’} and ‘MemoryWarpper<int>’)
     /*****************************/
 
     /********** 高级用法 **********/

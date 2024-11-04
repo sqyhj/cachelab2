@@ -368,10 +368,6 @@ class PtrWarpper : public BaseRegisterWarpper<int> {
     MemoryWarpper<T> operator[](const RegisterWarpper<T>&& offset) const {
         return MemoryWarpper<T>(ptr_ + offset.reg_);
     }
-    PtrWarpper<T> operator=(RegisterWarpper<T> other) {
-        *ptr_ = other.reg_;
-        return *this;
-    }
 
     PtrWarpper<T> operator+(int offset) const {
         return PtrWarpper<T>(ptr_ + offset);
@@ -557,6 +553,8 @@ class RegisterWarpper : public BaseRegisterWarpper<int> {
         reg.check_valid();
         return other + reg.reg_;
     }
+    T operator+(const MemoryWarpper<T>& other) const = delete;
+    T operator+(const MemoryWarpper<T>&& other) const = delete;
 
     T operator+=(const RegisterWarpper<T>& other) {
         check_valid();
@@ -575,6 +573,9 @@ class RegisterWarpper : public BaseRegisterWarpper<int> {
         reg_ += other;
         return reg_;
     }
+    T operator+=(const MemoryWarpper<T>& other) = delete;
+    T operator+=(const MemoryWarpper<T>&& other) = delete;
+
     T operator++() {
         check_valid();
         reg_++;
@@ -606,6 +607,8 @@ class RegisterWarpper : public BaseRegisterWarpper<int> {
         reg.check_valid();
         return other - reg.reg_;
     }
+    T operator-(const MemoryWarpper<T>& other) const = delete;
+    T operator-(const MemoryWarpper<T>&& other) const = delete;
 
     T operator-=(const RegisterWarpper<T>& other) {
         check_valid();
@@ -619,6 +622,8 @@ class RegisterWarpper : public BaseRegisterWarpper<int> {
         reg_ -= other.reg_;
         return reg_;
     }
+    T operator-=(const MemoryWarpper<T>& other) const = delete;
+    T operator-=(const MemoryWarpper<T>&& other) const = delete;
     T operator-=(const T other) {
         check_valid();
         reg_ -= other;
@@ -653,6 +658,8 @@ class RegisterWarpper : public BaseRegisterWarpper<int> {
         reg.check_valid();
         return other * reg.reg_;
     }
+    T operator*(const MemoryWarpper<T>& other) const = delete;
+    T operator*(const MemoryWarpper<T>&& other) const = delete;
 
     T operator*=(const RegisterWarpper<T>& other) {
         check_valid();
@@ -671,6 +678,8 @@ class RegisterWarpper : public BaseRegisterWarpper<int> {
         reg_ *= other;
         return reg_;
     }
+    T operator*=(const MemoryWarpper<T>& other) const = delete;
+    T operator*=(const MemoryWarpper<T>&& other) const = delete;
 
     /* / */
     T operator/(const RegisterWarpper<T>& other) const {
@@ -691,6 +700,8 @@ class RegisterWarpper : public BaseRegisterWarpper<int> {
         reg.check_valid();
         return other / reg.reg_;
     }
+    T operator/(const MemoryWarpper<T>& other) const = delete;
+    T operator/(const MemoryWarpper<T>&& other) const = delete;
 
     T operator/=(const RegisterWarpper<T>& other) {
         check_valid();
@@ -709,6 +720,8 @@ class RegisterWarpper : public BaseRegisterWarpper<int> {
         reg_ /= other;
         return reg_;
     }
+    T operator/=(const MemoryWarpper<T>& other) const = delete;
+    T operator/=(const MemoryWarpper<T>&& other) const = delete;
 
     /* % */
     T operator%(const RegisterWarpper<T>& other) const {
@@ -729,6 +742,8 @@ class RegisterWarpper : public BaseRegisterWarpper<int> {
         reg.check_valid();
         return other % reg.reg_;
     }
+    T operator%(const MemoryWarpper<T>& other) const = delete;
+    T operator%(const MemoryWarpper<T>&& other) const = delete;
 
     T operator%=(const RegisterWarpper<T>& other) {
         check_valid();
@@ -747,14 +762,11 @@ class RegisterWarpper : public BaseRegisterWarpper<int> {
         reg_ %= other;
         return reg_;
     }
+    T operator%=(const MemoryWarpper<T>& other) const = delete;
+    T operator%=(const MemoryWarpper<T>&& other) const = delete;
 
     friend class MemoryWarpper<T>;
     friend class PtrWarpper<T>;
-};
-
-template <typename T>
-class FastBuffer {
-   public:
 };
 
 using reg = RegisterWarpper<int>;
