@@ -1,7 +1,7 @@
 CC=gcc
 CXX=g++
-CFLAGS=-Wall -O0 -g -std=c11 -fsanitize=address -fno-omit-frame-pointer
-CXXFLAGS=-Wall -O0 -g -std=c++17 -fsanitize=address -fno-omit-frame-pointer
+CFLAGS=-Wall -O0 -g -std=c11 -fsanitize=address -fno-omit-frame-pointer -fdiagnostics-color=always
+CXXFLAGS=-Wall -O0 -g -std=c++17 -fsanitize=address -fno-omit-frame-pointer -fdiagnostics-color=always
 CSIM_REF_FLAGS=-Wall -O3 -std=c11
 
 ifeq ($(wildcard csim.cpp), csim.cpp)
@@ -22,12 +22,17 @@ case_s=4
 case_E=1
 case_b=5
 
-all: main csim demo
+all: csim demo main
 
 matrix.o: matrix.cpp matrix.h common.h cachelab.h
 	$(CXX) $(CXXFLAGS) -c matrix.cpp
 
 gemm.o: gemm.cpp matrix.h common.h cachelab.h
+	@mkdir -p .legality_gemm
+	@cp gemm.cpp .legality_gemm
+	@ $(CXX) $(CXXFLAGS) -fsyntax-only -Itest/fake_include .legality_gemm/gemm.cpp >.legality_gemm/output.txt 2>.legality_gemm/output.txt || ( \
+		sed 's|\.legality_gemm/||g' .legality_gemm/output.txt && rm -rf .legality_gemm && echo "You use something illegal in your gemm.cpp!" && exit 1)
+	@rm -rf .legality_gemm
 	$(CXX) $(CXXFLAGS) -c gemm.cpp
 
 gemm_baseline.o: gemm_baseline.cpp matrix.h common.h cachelab.h

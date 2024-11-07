@@ -67,7 +67,15 @@ def test_gemm(ignore_submit=False, no_linux=False, baseline_only=False, force=Fa
 
     # Local test
     results = []
-    subprocess.run(["make", "-j"], check=True, shell=True, capture_output=True)
+    try:
+        subprocess.run(["make", "-j"], check=True, shell=True, 
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            # capture_output=True
+        )
+    except subprocess.CalledProcessError as e:
+        print(e.stdout.decode())
+        exit(1)
 
     baselines = []
 
@@ -113,7 +121,7 @@ def main():
     parser.add_argument("--baseline", action="store_true")
     args = parser.parse_args()
     test_gemm(
-        ignore_submit=False,
+        ignore_submit=True,
         no_linux=args.no_linux,
         baseline_only=args.baseline,
     )

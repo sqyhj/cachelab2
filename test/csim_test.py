@@ -40,11 +40,12 @@ def test_csim(ignore_ref=False):
             ["make", "-j"],
             check=True,
             shell=True,
-            capture_output=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            # capture_output=True,
         )
     except subprocess.CalledProcessError as e:
         print(e.stdout.decode())
-        print(e.stderr.decode())
         exit(1)
     for s, E, b in [(5, 1, 5), (2, 4, 3), (4, 2, 4), (1, 1, 1)]:
         for trace_file in trace_files:

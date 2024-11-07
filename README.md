@@ -145,10 +145,11 @@ Examples:
 
 ```bash
 python3 test/csim_test.py
+# 提示：请不要 cd 到 test 目录下执行
 
 # 非 linux 用户，你可以这样测试，我们会仅执行你的 csim，你需要对照下文来检查结果是否正确
 # 或者 push 到 Github Classroom 里，由 autograding 来测试 
-python3 test/csim_test.py --no_linux 
+python3 test/csim_test.py --no_linux
 ```
 
 得到这样的输出代表你的实现是正确的：
@@ -469,6 +470,7 @@ void example_now(ptr_reg mem){
 
 ```bash
 python3 test/gemm_test.py
+# 提示：请不要 cd 到 test 目录下执行
 
 # 对于非 linux 用户，我们会用你的 csim 替代 csim-ref 来完成本测试
 # 你需要保证你的 csim 是正确的，否则这一节的结果将没有意义
