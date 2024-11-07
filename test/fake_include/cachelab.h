@@ -30,5 +30,3 @@
 
 #define malloc DO_NOT_USE_THIS
 #define free DO_NOT_USE_THIS
-#define new DO_NOT_USE_THIS
-#define delete DO_NOT_USE_THIS

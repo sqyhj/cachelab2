@@ -60,8 +60,7 @@ csim-ref: csim-ref.c
 	$(CC) ${CSIM_REF_FLAGS} -o csim-ref csim-ref.c
 	strip csim-ref
 
-case%:
-	make
+case%: all
 	mkdir -p gemm_traces
 	./main $@ > gemm_traces/$@.trace
 	@if [ "$(NO_LINUX)" = "true" ]; then \
