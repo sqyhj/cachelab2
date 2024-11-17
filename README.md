@@ -514,7 +514,7 @@ python3 test/gemm_test.py --no_linux
 - 请一定看看我们的[后记](#真实的故事背景与优化提示)。
 - 注意优化 miss_cache 和 miss_reg 的平衡，例如为了减少 miss_reg 而增加一些 miss_cache 可能是值得的。
 - 在实际的工业场合，对于矩阵乘法优化问题，相较于理论分析，我们常常是穷举超参数，比如分块的大小来确定最优的参数，所以当你发现问题过于复杂时不妨尝试穷举。换言之，你可以思考不同的“大致方案”，然后跑一下看看结果。而不必强求分析出某个具体方案再实施。
-- 你可以使用助教写的 [`parabuild`](https://github.com/panjd123/parabuild) 项目进行性能调优，他的用法和场景需要你结合自己的需求探索。
+- 你可以使用助教写的 [`parabuild-rust`](https://github.com/panjd123/parabuild-rust) 或 [`parabuild`](https://github.com/panjd123/parabuild) 项目进行性能调优
 
 ## 提交，报告与总分
 
