@@ -76,7 +76,7 @@ void demo(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
 
     std::cout << std::hex << A << std::dec << std::endl;
     std::cout << A.info() << std::endl;
-    // 还可以输出指针的值，即指向的地址，注意默认总是 10 进制输出
+    // 还可以输出指针的值，即指向的地址，注意默认总是 10 进制输出，所以你可以用 std::hex << A 输出 16 进制
 
     // 有时候你希望把一个寄存器绑定撤销，也就是之前的一个 reg 再也不用了，你不希望它占用一个寄存器，你可以用以下方法
 
