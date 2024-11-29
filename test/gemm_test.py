@@ -123,7 +123,7 @@ def main():
     parser.add_argument("--disable_auto_make", action="store_true")
     args = parser.parse_args()
     test_gemm(
-        ignore_submit=True,
+        ignore_submit=False,
         no_linux=args.no_linux,
         baseline_only=args.baseline,
         ignore_make=args.disable_auto_make,
