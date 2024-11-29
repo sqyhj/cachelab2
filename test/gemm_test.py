@@ -59,7 +59,7 @@ def test_gemm_case(case: str, no_linux=False) -> tuple:
     return case, miss_cache, miss_reg, latency
 
 
-def test_gemm(ignore_submit=False, no_linux=False, baseline_only=False, force=False):
+def test_gemm(ignore_submit=False, no_linux=False, baseline_only=False, force=False, ignore_make=False):
     if not ignore_submit:
         if not osp.exists(".access_key"):
             print("Please run ./submit_gemm.sh to setup the access key.")
@@ -67,15 +67,16 @@ def test_gemm(ignore_submit=False, no_linux=False, baseline_only=False, force=Fa
 
     # Local test
     results = []
-    try:
-        subprocess.run(["make", "-j"], check=True, shell=True, 
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            # capture_output=True
-        )
-    except subprocess.CalledProcessError as e:
-        print(e.stdout.decode())
-        exit(1)
+    if not ignore_make:
+        try:
+            subprocess.run(["make", "-j"], check=True, shell=True, 
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                # capture_output=True
+            )
+        except subprocess.CalledProcessError as e:
+            print(e.stdout.decode())
+            exit(1)
 
     baselines = []
 
@@ -119,11 +120,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--no_linux", action="store_true")
     parser.add_argument("--baseline", action="store_true")
+    parser.add_argument("--disable_auto_make", action="store_true")
     args = parser.parse_args()
     test_gemm(
         ignore_submit=True,
         no_linux=args.no_linux,
         baseline_only=args.baseline,
+        ignore_make=args.disable_auto_make,
     )
 
 
