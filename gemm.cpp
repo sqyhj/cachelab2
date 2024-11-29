@@ -21,12 +21,12 @@
 
 // 我们用这个 2*2*2 的矩阵乘法来演示寄存器是怎么被分配的
 void gemm_case0(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {  // allocate 0 1 2 3
-    for (reg i = 0; i < m; ++i) {                                           // allocate 4
-        for (reg j = 0; j < p; ++j) {                                       // allocate 5
-            reg tmpc = 0;                                                   // allocate 6
-            for (reg k = 0; k < n; ++k) {                                   // allocate 7
-                reg tmpa = A[i * n + k];                                    // allocate 8
-                reg tmpb = B[k * p + j];                                    // allocate 9
+    for (reg i = 0; i < m; ++i) {                                   // allocate 4
+        for (reg j = 0; j < p; ++j) {                               // allocate 5
+            reg tmpc = 0;                                           // allocate 6
+            for (reg k = 0; k < n; ++k) {                           // allocate 7
+                reg tmpa = A[i * n + k];                            // allocate 8
+                reg tmpb = B[k * p + j];                            // allocate 9
                 tmpc += tmpa * tmpb;
             }  // free 9 8
             // free 7
@@ -115,12 +115,12 @@ void gemm_case3(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
 
 // 我们用这个 2*2*2 的矩阵乘法来演示寄存器是怎么被分配的
 void gemm_case0(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {  // allocate 0 1 2 3
-    for (reg i(0); i < m; ++i) {                                           // allocate 4
-        for (reg j(0); j < p; ++j) {                                       // allocate 5
-            reg tmpc(0);                                                   // allocate 6
-            for (reg k(0); k < n; ++k) {                                   // allocate 7
-                reg tmpa(A[i * n + k]);                                    // allocate 8
-                reg tmpb(B[k * p + j]);                                    // allocate 9
+    for (reg i(0); i < m; ++i) {                                    // allocate 4
+        for (reg j(0); j < p; ++j) {                                // allocate 5
+            reg tmpc(0);                                            // allocate 6
+            for (reg k(0); k < n; ++k) {                            // allocate 7
+                reg tmpa(A[i * n + k]);                             // allocate 8
+                reg tmpb(B[k * p + j]);                             // allocate 9
                 tmpc += tmpa * tmpb;
             }  // free 9 8
             // free 7
