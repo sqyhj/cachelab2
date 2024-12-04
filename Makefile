@@ -60,7 +60,7 @@ csim-ref: csim-ref.c
 	$(CC) ${CSIM_REF_FLAGS} $(CPPFLAGS) -o csim-ref csim-ref.c
 	strip csim-ref
 
-case%: all
+case%: main
 	mkdir -p gemm_traces
 	./main $@ > gemm_traces/$@.trace
 	@if [ "$(NO_LINUX)" = "true" ]; then \
@@ -70,7 +70,4 @@ case%: all
 	fi
 
 clean:
-	rm -rf main demo *.o csim handin.tar gemm_traces .csim_results .overall_results .autograder_result .last_submit_time workspaces
-
-handin:
-	tar cvf handin.tar csim.c gemm.cpp report/report.pdf
+	rm -rf main demo *.o csim gemm_traces .csim_results .overall_results .autograder_result .last_submit_time workspaces .baseline

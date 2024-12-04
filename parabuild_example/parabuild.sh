@@ -8,9 +8,9 @@ parabuild \
     --data-file parabuild_example/data.json \
     --init-bash-script="" \
     --compile-bash-script="make main -B -j" \
-    --run-bash-script="python test/gemm_test.py --disable_auto_make" \
+    --run-bash-script="python test/gemm_test.py --ignore_submit" \
     -j 1 \
-    -J="-1" \
+    --run-in-place \
     --seperate-template \
     --panic-on-compile-error \
     --format-output \

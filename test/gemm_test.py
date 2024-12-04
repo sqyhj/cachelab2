@@ -26,7 +26,7 @@ def output_results(results: list, baseline: tuple):
         ],
     )
     print(format_table(results2))
-    print(f"Weighted Speedup: {weighted_speedup:.2f}")
+    print(f"Weighted Speedup: {weighted_speedup:.4f}")
     # return tuple([item for tup in results for item in tup[1:]] + [weighted_speedup])
     o_results = []
     for tup, b in zip(results, baseline):
@@ -121,9 +121,10 @@ def main():
     parser.add_argument("--no_linux", action="store_true")
     parser.add_argument("--baseline", action="store_true")
     parser.add_argument("--disable_auto_make", action="store_true")
+    parser.add_argument("--ignore_submit", action="store_true")
     args = parser.parse_args()
     test_gemm(
-        ignore_submit=False,
+        ignore_submit=args.ignore_submit,
         no_linux=args.no_linux,
         baseline_only=args.baseline,
         ignore_make=args.disable_auto_make,
