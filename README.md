@@ -46,21 +46,27 @@
 
 > 助教不负责解决其他操作系统遇到的问题，即使助教可能提供了为其他操作系统准备的内容，也请谨慎使用，仅供参考，这些内容不会得到维护/可能是错误的，Github Action 上的是可以参考的
 
-### 排行榜提交前的准备工作
+### 准备工作
+
+> 注意以下两个网站都是内网网站，你需要在校园网下才能访问，通常访问问题都是由于开启代理导致，Linux 下你可以输出 `echo $http_proxy` 如果结果不为空则说明你使用了代理，代理需要你知道你曾经是用什么软件，或者在什么地方配过，没有统一的解决方案。
 
 本实验的 Part B 部分，我们会采用~~紧张刺激的~~打榜的形式来计算分数，见 [https://cachelab.ruc.panjd.net](https://cachelab.ruc.panjd.net)。在你开始本实验前，请先做好如下配置：
 
 1. 访问 [https://ics.ruc.panjd.net](https://ics.ruc.panjd.net) 获取提交密钥，由于短时间访问流量过大可能导致学生身份认证失败，请尝试等待一段时间后再试，或者重启电脑，清空 cookies，以无痕模式访问等
-2. Clone 本仓库
-3. 运行本仓库下的 `submit_gemm.sh` 脚本，即执行 `./submit_gemm.sh`
-4. 按要求输入提交密钥（access_key）
+2. Clone 本仓库，注意，实验要求是 Linux 环境，你需要全程在 Linux 终端，或者 VSCode WSL 的终端中完成操作，常见错误包括
+    1. 用 Windows 上的 git bash 克隆仓库后再在 WSL 里打开，这意味着你的仓库其实遵守了 Windows 文件系统的规则，在 Linux 上使用的时候容易有 BUG，比如报和 `\r` 相关的错误，这是因为两个系统的换行符不同，Linux 不识别 Windows 的换行符。你需要全程在 Termial 打开的 Ubuntu 终端，或者 VSCode WSL 下方的终端中完成操作。
+    2. WSL 打开后显示的默认路径不是 `~` 而是 `/mnt/c/Users/<user name>/Project$` 之类的，这意味着 WSL 没自动切到 Linux 的用户目录下，而是跑到 Windows 下去了，比较笨的方法是每次都 `cd ~` 切回 Linux 的 `HOME` 目录（通常的默认目录），如果你想要一劳永逸的解决这个问题可以搜索"WSL 修改默认目录"结合你的实际情况处理，没有通常的最佳方案（你可以都试试，能用的即可）。
+    3. 报错 permission deny，问题同 1，也是跨文件系统，导致可执行权限信息丢失。
+4. 运行本仓库下的 `submit_gemm.sh` 脚本，即执行 `./submit_gemm.sh`，或者 `bash ./submit_gemm.sh`
+5. 按要求输入提交密钥（access_key）
     ```bash
     Access key file is empty. Please enter the access key:
     ```
-5. 如果提交成功，你应该会看到终端输出：
+6. 如果提交成功，你应该会看到终端输出：
     ```bash
     Name: 张三, Student ID: 2000000000, 提交成功，请刷新 https://cachelab.ruc.panjd.net 查看测试结果
     ```
+7. 如果你不幸在第四步输错了，请执行 `rm .access_key` 删除缓存的密钥重新回到第 4 步
 
 这个命令的本质是把该文件夹下的 `gemm.cpp` 文件和访问密钥发送到我们的服务器上，我们会在后台运行你的代码，然后给你一个分数。
 
@@ -472,7 +478,7 @@ void example_now(ptr_reg mem){
 
 #### 测试与分数
 
-> 如果你还没完成 [排行榜提交前的准备工作](#排行榜提交前的准备工作)，请立刻回头先完成这个。
+> 如果你还没完成 [准备工作](#准备工作)，请立刻回头先完成这个。
 
 运行以下命令可以在本地获取详细的性能报告，同时自动上传 `gemm.cpp` 到排行榜上，自动上传有 30 秒的间隔，如果你想强制上传，请用上传脚本 `./submit_gemm.sh` 上传。
 
