@@ -455,6 +455,8 @@ void example_now(ptr_reg mem){
 - case2: $32 \times 32 \times 32$ 矩阵乘法
 - case3: $31 \times 37 \times 31$ 矩阵乘法
 
+本题 $m \times n \times p$ 表示 $A, B, C$ 矩阵的形状分别为 $m \times n, n \times p, m \times p$，他们满足 $C = AB$
+
 你可以运行 `./main case1` 来查看你的算法执行 case1 的矩阵乘法时对应的 trace 文件。
 
 运行 `make case1` 会帮你把这份 trace 文件保存到 `gemm_traces/case1.trace` 下，并调用 `csim-ref` 来计算对应的 cache 行为。
@@ -649,6 +651,7 @@ void demo(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
                               // 其开销等于从寄存器到内存
     ptr_reg subC = C + 10;  // 初始化一个指针，指针也会占用一个寄存器，注意函数传入的参数也占用了寄存器
     reg var[2];               // 你可以申请寄存器数组
+    var[a] = 0;               // 并用寄存器作为下标
 
     // int mem1;                 // 但你不能申请内存，或者内存数组
     // int mem2[2];              // 但你不能申请内存，或者内存数组
@@ -663,7 +666,6 @@ void demo(ptr_reg A, ptr_reg B, ptr_reg C, ptr_reg buffer) {
     delete[] reg_array;                                 // 不要忘记释放寄存器数组
     std::cout << "Current: " << get_current_reg_count() << std::endl;
     /*****************************/
-
 
     /********** 特殊情况 **********/
     // 大多数 +-*/% 操作都是可以用的，除了下面这个情况
