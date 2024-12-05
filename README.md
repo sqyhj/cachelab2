@@ -53,7 +53,7 @@
 本实验的 Part B 部分，我们会采用~~紧张刺激的~~打榜的形式来计算分数，见 [https://cachelab.ruc.panjd.net](https://cachelab.ruc.panjd.net)。在你开始本实验前，请先做好如下配置：
 
 1. 访问 [https://ics.ruc.panjd.net](https://ics.ruc.panjd.net) 获取提交密钥，由于短时间访问流量过大可能导致学生身份认证失败，请尝试等待一段时间后再试，或者重启电脑，清空 cookies，以无痕模式访问等
-2. Clone 本仓库，注意，实验要求是 Linux 环境，你需要全程在 Linux 终端，或者 VSCode WSL 的终端中完成操作，常见错误包括
+2. Clone 本仓库，注意，实验要求是 Linux 环境，你需要全程在 Termial 打开的 Ubuntu 终端，或者 VSCode WSL 下方的终端中完成操作，常见错误包括：
     1. 用 Windows 上的 git bash 克隆仓库后再在 WSL 里打开，这意味着你的仓库其实遵守了 Windows 文件系统的规则，在 Linux 上使用的时候容易有 BUG，比如报和 `\r` 相关的错误，这是因为两个系统的换行符不同，Linux 不识别 Windows 的换行符。你需要全程在 Termial 打开的 Ubuntu 终端，或者 VSCode WSL 下方的终端中完成操作。
     2. WSL 打开后显示的默认路径不是 `~` 而是 `/mnt/c/Users/<user name>/Project$` 之类的，这意味着 WSL 没自动切到 Linux 的用户目录下，而是跑到 Windows 下去了，比较笨的方法是每次都 `cd ~` 切回 Linux 的 `HOME` 目录（通常的默认目录），如果你想要一劳永逸的解决这个问题可以搜索"WSL 修改默认目录"结合你的实际情况处理，没有通常的最佳方案（你可以都试试，能用的即可）。
     3. 报错 permission deny，问题同 1，也是跨文件系统，导致可执行权限信息丢失。
