@@ -20,11 +20,20 @@
 
 遵守以下规范，以便得到助教及时的帮助（**负责本实验的助教不加微信**，请通过 issue 提问）：
 
-- 请确保你已经阅读了 [everything-you-should-know](https://github.com/RUCICS/everything-you-should-know)，尤其是其中的 [How To Ask](https://github.com/RUCICS/everything-you-should-know/blob/main/ask/README.md)。
+- 请确保你已经阅读了 [everything-you-should-know](https://github.com/RUCICS/everything-you-should-know)，比如其中的 [How To Ask](https://github.com/RUCICS/everything-you-should-know/blob/main/ask/README.md)。
 - 本实验相关的问题请提交到**模板仓库**的 [ISSUE](https://github.com/RUCICS/cachelab2/issues) 中，请在提交问题时检查其他 issue 是否有一样的问题，并反馈到已有的 issue 下，注意 GitHub 默认不显示已经 close 的问题，请注意修改 Filters 查找所有 issue。如果确有必要，助教会在 issue 中请求你加助教的微信解决，但即使你的问题需要加微信解决，**也烦请先用 issue 和助教取得联系，以确保其他人可以确认/解决相同的问题**。
 - 此实验提供的报告非常详细，除了本文档，你还需要在完成第二部分实验前仔细阅读 [`demo.cpp`](./demo.cpp)，这是第二部分的文档。依照经验，会有 50% 以上的问题是不读文档导致的，提出报告中解答了的问题可能会给助教留下不太好的印象。
 
-> 模板仓库即 [https://github.com/RUCICS/cachelab2](https://github.com/RUCICS/cachelab2)，不要反馈到自己的作业仓库里了，我们收不到提醒
+> 模板仓库即 [https://github.com/RUCICS/cachelab2](https://github.com/RUCICS/cachelab2)，不要反馈到自己的作业仓库里了，我们收不到提醒。
+>
+> 为什么问题必须公开问（或者说为什么本 Lab 不加微信）：
+>
+> 1. 问题往往是重复的，而且大家写 Lab 基本都是最后几天内，微信回不过来，问题和回答公开对于学生和助教来说都更快捷一点。
+> 2. 偶尔会收到类似“某处的题怎么写”的问题，这类问题一般会以“看不懂文档要我干嘛”的形式出现，背后的含义一部分是助教认为文档再写就把答案写出来了，留下的地方需要学生思考；但也可能出现提示的效果确实低于预期，需要给出更多提示的修正情况，此时如果助教确实回答了，那这个回答应该公开。
+> 3. 其他不可以公开的问题：这类问题往往是因为问题本身包含了你个人的解法或者是个人信息，你可以试着在 ISSUE 中仅包含问题的描述，助教在和你加上微信解决问题后会再回到这个 ISSUE 中公开解决方案，并隐去中间调试过程不便公开的信息，目的同 1。
+> 4. 其他可以公开，但是微信更方便的问题：微信一般即时性更强一点，对于需要高频交流确认的问题可以用微信，但是这种问题一般是和本地环境有关，助教需要不停在学生的电脑环境下试错，这种问题其实建议上机课解决，如果时间不够充裕可以微信联系。
+> 5. 培养在计算机领域提问的能力，[How To Ask](https://github.com/RUCICS/everything-you-should-know/blob/main/ask/README.md) 是课程设计的一部分，通过微信交流往往使人的提问和回答都比较随意和简陋，不便于培养提问的能力和未来解决问题的能力（比如在互联网上提问，问得不好没人回答），解决方案是用邮箱/ISSUE这种即时性差一点，但也更符合互联网情况的交流方式。
+> 6. 如果你的问题或你的观点和上述几点相悖，你可以选择加微信提问，如果你同时愿意分享你的看法便于这件事情在未来更好的实施/取消就更好了。
 
 ## ⚠️警告
 
