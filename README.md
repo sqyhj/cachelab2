@@ -511,7 +511,7 @@ python3 test/gemm_test.py --no_linux
 #### 提示
 
 - 优化难度视你采用的方法，不一定是从 case1 到 case3 递增的。
-- 分块是一个缓解 cache 冲突的好办法：(waside-blocking.pdf)[https://csapp.cs.cmu.edu/public/waside/waside-blocking.pdf]，不过，我们有两级 cache，**仔细思考该如何分块**，只需要分一次吗。
+- 分块是一个缓解 cache 冲突的好办法：[waside-blocking.pdf](https://csapp.cs.cmu.edu/public/waside/waside-blocking.pdf)，不过，我们有两级 cache，**仔细思考该如何分块**，只需要分一次吗。
 - 可以考虑迭代次序的影响，即 `ijk` 或者别的次序，注意因为 cache 的规格不同，结论和课上（实际CPU）的情况可能不同。
 - CMU cachelab 中优化的算法是矩阵转置，我们的是矩阵乘法，但是除了分块，可能还有其他相同的优化策略可以用。
 - [寄存器性能优化](#寄存器性能优化) 章节中我们已经提示了寄存器的优化方法。
