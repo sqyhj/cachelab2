@@ -255,9 +255,9 @@ _Z4testPi:
 
 ```c
 int B[256][256];
-for (int i = 0; i < 256; i++) {
-    for (int j = 0; j < 256; j++) {
-        do_something(B[j][i]);
+for (int j = 0; j < 256; j++) {
+    for (int i = 0; i < 256; i++) {
+        do_something(B[i][j]);
     }
 }
 ```
@@ -265,11 +265,11 @@ for (int i = 0; i < 256; i++) {
 直接实现，会导致 B 的内存访问不连续。假设 cache 的行大小是 32 字节，即 8 个 int，我们可以对访问进行分块，即每次处理一个 $8 \times 8$ 的子矩阵，这样每个子矩阵在访问的过程中都充分利用了已经读取的 cache 行，减少了 cache miss。
 
 ```c
-for (int i = 0; i < 256; i += 8) {
-    for (int j = 0; j < 256; j += 8) {
-        for (int ii = i; ii < i + 8; ii++) {
-            for (int jj = j; jj < j + 8; jj++) {
-                do_something(B[j][i]);
+for (int j = 0; j < 256; j += 8) {
+    for (int i = 0; i < 256; i += 8) {
+        for (int jj = j; jj < j + 8; jj++) {
+            for (int ii = i; ii < i + 8; ii++) {
+                do_something(B[ii][jj]);
             }
         }
     }
