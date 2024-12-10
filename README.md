@@ -127,7 +127,7 @@ make -j
 - 逗号后的数字代表访问的内存大小（byte记），如 1，2，4，8，我们保证大小小于等于 8。
 - 最后一个数字代表的是与这行操作相关的寄存器，这个数字为 -1 时代表立即数，比如 `C[0] = 0`。这个信息其实不影响你 Part A 的实现。
 
-这一部分你需要做的是补全 `csim.c` 文件，使其能够正确地模拟 LRU 替换策略的 cache 的行为，计算 cache 的命中次数（hits）、缺失次数（misses）、替换次数（evictions）。
+这一部分你需要做的是补全 `csim.c` 文件，使其能够正确地模拟一个具有 LRU 替换策略，Write-Back + Write-allocate 的 cache 的行为，计算 cache 的命中次数（hits）、缺失次数（misses）、替换次数（evictions）。
 
 其中 evictions 是指当前 cache miss，且当前的 cache 已满，我们需要做一次 LRU 策略的替换，如果此时 cache 未满，只要存入 cache 即可，就不会导致 evictions 增加。
 
@@ -455,7 +455,7 @@ void example_now(ptr_reg mem){
 
 我们假设的硬件环境是：
 
-- cache：LRU 替换策略，s = 4，E = 1，b = 5
+- cache：LRU 替换策略，Write-Back + Write-allocate，s = 4，E = 1，b = 5
 - CPU：一共 32 个寄存器，我们的框架会在你使用超过 32 个寄存器时抛出运行时错误
 - 读写一次内存需要 15 个单位时间
 - 读写一次 cache 需要 1 个单位时间
