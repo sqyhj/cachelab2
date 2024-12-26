@@ -2,15 +2,24 @@
 
 void test_case(int m, int n, int p, void (*gemm_case)(ptr_reg, ptr_reg, ptr_reg, ptr_reg)) {
     int *rawA, *rawB, *rawC;
+    int* ansC = new int[m * p];
     {
         auto [A, B, C, buffer] = init(m, n, p);
         rawA = A.ptr_;
         rawB = B.ptr_;
         rawC = C.ptr_;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < p; j++) {
+                ansC[i * p + j] = 0;
+                for (int k = 0; k < n; k++) {
+                    ansC[i * p + j] += rawA[i * n + k] * rawB[k * p + j];
+                }
+            }
+        }
         gemm_case(std::move(A), std::move(B), std::move(C), std::move(buffer));
     }
 
-    if (!correct_check(rawA, rawB, rawC, m, n, p)) {
+    if (!correct_check(ansC, rawC, m, n, p)) {
         throw std::runtime_error("Incorrect result");
     } else {
         std::cerr << "Pass using " << get_max_reg_count() << " regs" << std::endl;
@@ -18,6 +27,7 @@ void test_case(int m, int n, int p, void (*gemm_case)(ptr_reg, ptr_reg, ptr_reg,
 
     print_log();
     destroy();
+    delete[] ansC;
 }
 
 void case0() {
