@@ -68,10 +68,10 @@ bool correct_check(int* rawA, int* rawB, int* rawC, int m, int n, int p) {
     return true;
 }
 
-bool correct_check(int* ansC, int* rawC, int m, int n, int p) {
+bool is_same(int* ans, int* out, int m, int n){
     for (int i = 0; i < m; i++) {
-        for (int j = 0; j < p; j++) {
-            if (ansC[i * p + j] != rawC[i * p + j]) {
+        for (int j = 0; j < n; j++) {
+            if (ans[i * n + j] != out[i * n + j]) {
                 return false;
             }
         }
