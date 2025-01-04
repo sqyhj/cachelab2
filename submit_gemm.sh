@@ -30,7 +30,7 @@ fi
 # 使用 curl 命令发送 POST 请求
 is_public=$1
 if [ "$is_public" = "public" ]; then
-    url="https://pubcachelab.ruc.panjd.net:54398"
+    url="https://cachelab.pubruc.panjd.net:54398"
 else
     url="https://cachelab.ruc.panjd.net"
 fi
