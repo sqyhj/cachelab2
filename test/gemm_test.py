@@ -59,10 +59,13 @@ def test_gemm_case(case: str, no_linux=False) -> tuple:
     return case, miss_cache, miss_reg, latency
 
 
-def test_gemm(ignore_submit=False, no_linux=False, baseline_only=False, force=False, ignore_make=False):
+def test_gemm(ignore_submit=False, no_linux=False, baseline_only=False, force=False, ignore_make=False, public=False):
     if not ignore_submit:
         if not osp.exists(".access_key"):
-            print("Please run ./submit_gemm.sh to setup the access key.")
+            if not public:
+                print("Please execute ./submit_gemm.sh to set the access key.\nIf you are outside the campus network, please execute ./submit_gemm.sh --public")
+            else:
+                print("Please execute ./submit_gemm.sh --public to set the access key.\nIf you are inside the campus network, please execute ./submit_gemm.sh")
             exit(0)
 
     # Local test
@@ -107,11 +110,14 @@ def test_gemm(ignore_submit=False, no_linux=False, baseline_only=False, force=Fa
         seconds = 30
         if current_time - last_time < datetime.timedelta(seconds=seconds) and not force:
             print(
-                f"Auto-submit skipped: less than {seconds} seconds since last submission."
+                f"Auto-submit skipped: less than {seconds} seconds since last submission"
             )
         else:
             write_current_time(".last_submit_time")
-            submission_result = subprocess.run(["bash", "submit_gemm.sh"], check=True)
+            if not public:
+                subprocess.run(["bash", "submit_gemm.sh"], check=True)
+            else:
+                subprocess.run(["bash", "submit_gemm.sh", "public"], check=True)
 
     return o_results
 
@@ -122,12 +128,14 @@ def main():
     parser.add_argument("--baseline", action="store_true")
     parser.add_argument("--disable_auto_make", action="store_true")
     parser.add_argument("--ignore_submit", action="store_true")
+    parser.add_argument("--public", action="store_true")
     args = parser.parse_args()
     test_gemm(
         ignore_submit=args.ignore_submit,
         no_linux=args.no_linux,
         baseline_only=args.baseline,
         ignore_make=args.disable_auto_make,
+        public=args.public,
     )
 
 
