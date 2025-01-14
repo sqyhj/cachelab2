@@ -40,7 +40,7 @@ def test_gemm_case(case: str, no_linux=False) -> tuple:
     subprocess.call(["rm", "-f", ".csim_results"])
     try:
         result = subprocess.run(
-            f"make {case}" + (" NO_LINUX=1" if no_linux else ""),
+            f"make {case}" + (" NO_LINUX=true" if no_linux else ""),
             # check=True,
             shell=True,
             capture_output=True,
