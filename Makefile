@@ -30,10 +30,10 @@ matrix.o: matrix.cpp matrix.h common.h cachelab.h
 gemm.o: gemm.cpp matrix.h common.h cachelab.h
 	@mkdir -p .legality_gemm
 	@cp gemm.cpp .legality_gemm
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c gemm.cpp
 	@ $(CXX) $(CXXFLAGS) $(CPPFLAGS) -fsyntax-only -Itest/fake_include .legality_gemm/gemm.cpp >.legality_gemm/output.txt 2>.legality_gemm/output.txt || ( \
 		sed 's|\.legality_gemm/||g' .legality_gemm/output.txt && rm -rf .legality_gemm && echo "You use something illegal in your gemm.cpp!" && exit 1)
 	@rm -rf .legality_gemm
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c gemm.cpp
 
 gemm_baseline.o: gemm_baseline.cpp matrix.h common.h cachelab.h
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c gemm_baseline.cpp

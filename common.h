@@ -604,7 +604,6 @@ class RegisterWarpper : public BaseRegisterWarpper<int> {
     }
     T operator-(const T other) const {
         check_valid();
-        other.check_valid();
         return reg_ - other;
     }
     friend T operator-(const T other, const RegisterWarpper<T>& reg) {
