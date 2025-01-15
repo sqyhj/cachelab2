@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if ! command -v curl &> /dev/null; then
-    echo "Error: curl is not installed. Please install curl before running this script. 请自查如何安装 curl。"
+    echo "Error: curl is not installed. Please install curl before running this script."
     exit 1
 fi
 
@@ -29,8 +29,9 @@ fi
 
 # 使用 curl 命令发送 POST 请求
 is_public=$1
-if [ "$is_public" = "public" ]; then
+if [ "$is_public" = "public" ] || [ "$is_public" = "--public" ]; then
     url="https://cachelab.pubruc.panjd.net:54398"
+    echo "Note: You are using the public server, which may have various issues that you need to solve by yourself."
 else
     url="https://cachelab.ruc.panjd.net"
 fi

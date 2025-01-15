@@ -53,9 +53,9 @@
 | Ubuntu 22.04 LTS | ✔️ |
 | Ubuntu 24.04 LTS | ✔️ |
 
-典型场景是用 WSL2 进行开发，如果你不具有这个环境，比如你是 Mac 用户，请访问 [https://ics.ruc.panjd.net](https://ics.ruc.panjd.net) 获取服务器登陆信息，在服务器上完成本实验。
+典型场景是用 WSL2 进行开发，如果你不具有这个环境，比如你是 Mac 用户，请访问 [https://ics.ruc.panjd.net](https://ics.ruc.panjd.net) 获取服务器登陆信息，在服务器上完成本实验（该网站和服务器都仅能在校园网下访问，如果你不在校内，你应该使用校园网 VPN）。
 
-> 助教不负责解决其他操作系统遇到的问题，即使助教可能提供了为其他操作系统准备的内容，也请谨慎使用，仅供参考，这些内容不会得到维护/可能是错误的，Github Action 上的是可以参考的
+> 助教不负责解决其他操作系统遇到的问题，甚至应该说强烈反对，即使下文中助教可能提供了为其他操作系统准备的内容，你也应该抱着这些内容是错的假设来使用，因为这些内容不会得到维护，当且仅当你认为自己有能力处理不同系统上的问题时才可以选择在自己喜欢的系统上做本实验，此时你可以以 Github Action 的结果来作为最终的参考。
 
 ### 准备工作
 
@@ -68,7 +68,7 @@
     1. 用 Windows 上的 git bash 克隆仓库后再在 WSL 里打开，这意味着你的仓库其实遵守了 Windows 文件系统的规则，在 Linux 上使用的时候容易有 BUG，比如报和 `\r` 相关的错误，这是因为两个系统的换行符不同，Linux 不识别 Windows 的换行符。你需要全程在 Termial 打开的 Ubuntu 终端，或者 VSCode WSL 下方的终端中完成操作。
     2. WSL 打开后显示的默认路径不是 `~` 而是 `/mnt/c/Users/<user name>/Project$` 之类的，这意味着 WSL 没自动切到 Linux 的用户目录下，而是跑到 Windows 下去了，比较笨的方法是每次都 `cd ~` 切回 Linux 的 `HOME` 目录（通常的默认目录），如果你想要一劳永逸的解决这个问题可以搜索"WSL 修改默认目录"结合你的实际情况处理，没有通常的最佳方案（你可以都试试，能用的即可）。
     3. 报错 permission deny，问题同 1，也是跨文件系统，导致可执行权限信息丢失。
-4. 运行本仓库下的 `submit_gemm.sh` 脚本，即执行 `./submit_gemm.sh`，或者 `bash ./submit_gemm.sh`
+4. 运行本仓库下的 `submit_gemm.sh` 脚本，即执行 `./submit_gemm.sh`，如果你想使用公网访问，请执行 `./submit_gemm.sh --public`
 5. 按要求输入提交密钥（access_key）
     ```bash
     Access key file is empty. Please enter the access key:
@@ -77,7 +77,7 @@
     ```bash
     Name: 张三, Student ID: 2000000000, 提交成功，请刷新 https://cachelab.ruc.panjd.net 查看测试结果
     ```
-7. 如果你不幸在第四步输错了，请执行 `rm .access_key` 删除缓存的密钥重新回到第 4 步
+7. 如果你不幸在第四步输错了，表现为返回 `access_key not found`，请执行 `rm .access_key` 删除缓存的密钥重新回到第 4 步
 
 这个命令的本质是把该文件夹下的 `gemm.cpp` 文件和访问密钥发送到我们的服务器上，我们会在后台运行你的代码，然后给你一个分数。
 
@@ -507,7 +507,7 @@ void example_now(ptr_reg mem){
 
 > 如果你还没完成 [准备工作](#准备工作)，请立刻回头先完成这个。
 
-运行以下命令可以在本地获取详细的性能报告，同时自动上传 `gemm.cpp` 到排行榜上，自动上传有 30 秒的间隔，如果你想强制上传，请用上传脚本 `./submit_gemm.sh` 上传。
+运行以下命令可以在本地获取详细的性能报告，同时自动上传 `gemm.cpp` 到排行榜上，自动上传有 30 秒的间隔，如果你想强制上传，请用上传脚本 `./submit_gemm.sh` 或者 `./submit_gemm.sh --public`。
 
 ```bash
 python3 test/gemm_test.py
@@ -516,10 +516,21 @@ python3 test/gemm_test.py
 # 对于非 linux 用户，我们会用你的 csim 替代 csim-ref 来完成本测试
 # 你需要保证你的 csim 是正确的，否则这一节的结果将没有意义
 python3 test/gemm_test.py --no_linux
+
+# 如果你想从公网提交到排行榜
+python3 test/gemm_test.py --public
+
+# 以上 python 脚本会在以下情况下报错
+# 1. 你的代码有编译错误
+# 2. 你的矩阵乘法结果不正确；使用了规定外的类型或操作；使用了过多的寄存器；其他违反规定的行为
+# 3. 非预期问题，可能是项目本身的问题，也可能是其他问题，如果你怀疑是前者，请发送到 ISSUE 中
+
+# 请仔细读报错信息，报错信息通常会包含错误原因
 ```
 
 ```bash
 ./submit_gemm.sh
+./submit_gemm.sh --public # 如果你想通过公网访问（不推荐）
 ```
 
 请注意排行榜上仅保留最优提交，请在提交报告时注意提交对应的版本（分数一致即可），不一致会被当作作弊严肃处理。
