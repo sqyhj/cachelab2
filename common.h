@@ -73,20 +73,44 @@ class OutOfRegistersException : public CachelabException {
         : CachelabException(msg) {}
 };
 
-inline int max_reg_count = 0;
-inline int current_reg_count = 0;
-
 namespace {
 constexpr int reg_num = 32;
+}
 
-bool reg_map[reg_num] = {0};
+class GlobalManager {
+   public:
+    int max_reg_count;
+    int current_reg_count;
+    bool reg_map[reg_num];
+    static GlobalManager& getInstance() {
+        static GlobalManager instance;
+        return instance;
+    }
 
-inline int find_reg() {
+    GlobalManager()
+        : max_reg_count(0), current_reg_count(0) {
+        for (int i = 0; i < reg_num; i++) {
+            reg_map[i] = false;
+        }
+    }
+    GlobalManager(const GlobalManager&) = delete;
+    GlobalManager& operator=(const GlobalManager&) = delete;
+};
+
+namespace {
+int find_reg() {
     for (int i = 0; i < reg_num; i++) {
+        int& current_reg_count = GlobalManager::getInstance().current_reg_count;
+        int& max_reg_count = GlobalManager::getInstance().max_reg_count;
+        auto& reg_map = GlobalManager::getInstance().reg_map;
         if (!reg_map[i]) {
             reg_map[i] = true;
 #ifndef NDEBUG
             std::cerr << "allocate reg: " << i << std::endl;
+            for (int i = 0; i < reg_num; i++) {
+                printf("%d ", reg_map[i]);
+            }
+            printf("\n");
 #endif
             current_reg_count++;
             max_reg_count = std::max(max_reg_count, current_reg_count);
@@ -96,11 +120,17 @@ inline int find_reg() {
     throw OutOfRegistersException();
 }
 
-inline void free_reg(int reg_id) {
+void free_reg(int reg_id) {
+    int& current_reg_count = GlobalManager::getInstance().current_reg_count;
+    auto& reg_map = GlobalManager::getInstance().reg_map;
+    reg_map[reg_id] = false;
 #ifndef NDEBUG
     std::cerr << "free reg: " << reg_id << std::endl;
+    for (int i = 0; i < reg_num; i++) {
+        printf("%d ", reg_map[i]);
+    }
+    printf("\n");
 #endif
-    reg_map[reg_id] = false;
     current_reg_count--;
 }
 
@@ -179,7 +209,6 @@ class BaseRegisterWarpper {
     }
 
     BaseRegisterWarpper<T>& operator=(BaseRegisterWarpper<T>&& other) {
-        // TODO:
         check_valid();
         reg_ = other.reg_;
         if (other.state_ == RegisterWarpperState::ACTIVE) {
@@ -776,11 +805,11 @@ using reg = RegisterWarpper<int>;
 using ptr_reg = PtrWarpper<int>;
 
 inline int get_max_reg_count() {
-    return max_reg_count;
+    return GlobalManager::getInstance().max_reg_count;
 }
 
 inline int get_current_reg_count() {
-    return current_reg_count;
+    return GlobalManager::getInstance().current_reg_count;
 }
 
 inline void print_log() {
